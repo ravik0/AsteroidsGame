@@ -17,6 +17,7 @@ public void draw() {
   }
   if (forward == true) {
     bob.accelerate(0.05);
+    bob.rocketMan();
   }
   if (back == true) {
     bob.accelerate(-0.05);

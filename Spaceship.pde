@@ -11,7 +11,7 @@ class Spaceship extends Floater  {
   public double getDirectionY() { return myDirectionY; }
   public void setPointDirection(int degrees) { myPointDirection = degrees; }
   public double getPointDirection() { return myPointDirection; }
-  Spaceship() {
+  public Spaceship() {
     corners = 12;
     xCorners = new int[corners];
     yCorners = new int[corners];
@@ -25,5 +25,13 @@ class Spaceship extends Floater  {
     myDirectionX = 0;
     myDirectionY = 0;
     myPointDirection = -90;
+  }
+  public void rocketMan() {
+    translate((float)myCenterX,(float)myCenterY);
+    rotate((float)myPointDirection*PI/180);
+    line(-10,2,-5,2);
+    line(-10,0,-5,0);
+    line(-10,-2,-5,-2);
+    rotate(-1*(float)myPointDirection*PI/180);
   }
 }

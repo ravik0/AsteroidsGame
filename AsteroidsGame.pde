@@ -1,5 +1,6 @@
 Spaceship bob;
-Stars[] bill = new Stars[(int)(Math.random()*20)+7];
+Asteroids[] joe = new Asteroids[10];
+Stars[] bill = new Stars[(int)(Math.random()*20)+12];
 boolean forward, back, turnl, turnr = false;
 public void setup() {
   bob = new Spaceship();
@@ -7,26 +8,33 @@ public void setup() {
   for (int i = 0; i < bill.length; i++) {
     bill[i] = new Stars();
   }
+  for (int i = 0; i < joe.length; i++) {
+    joe[i] = new Asteroids();
+  }
 }
 public void draw() {
-  background(255);
+  background(0);
   bob.show();
   bob.move();
   for (int i = 0; i < bill.length; i++) {
     bill[i].show();
   }
+  for (int i = 0; i < joe.length; i++) {
+    joe[i].show();
+    joe[i].move();
+  }
   if (forward == true) {
     bob.accelerate(0.05);
-    bob.rocketMan();
+    bob.rocketCreater();
   }
   if (back == true) {
     bob.accelerate(-0.05);
   }
   if (turnl == true) {
-    bob.turn(10);
+    bob.turn(-10);
   }
   if (turnr == true) {
-    bob.turn(-10);
+    bob.turn(10);
   }
 }
 public void keyPressed() {

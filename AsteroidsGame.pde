@@ -2,6 +2,8 @@ Spaceship bob;
 Asteroids[] joe = new Asteroids[10];
 Stars[] bill = new Stars[(int)(Math.random()*20)+12];
 boolean forward, back, turnl, turnr = false;
+boolean invulnerability = false; //when teleporting, make sure doesn't get killed
+int timeInvul = 0; //how long invulnerability lasts
 public void setup() {
   bob = new Spaceship();
   size(400,400);
@@ -16,6 +18,7 @@ public void draw() {
   background(0);
   bob.show();
   bob.move();
+  dealWithInvulnerability();
   for (int i = 0; i < bill.length; i++) {
     bill[i].show();
   }
@@ -56,6 +59,7 @@ public void keyPressed() {
     bob.setDirectionX(0);
     bob.setDirectionY(0);
     bob.setPointDirection((int)Math.random()*361);
+    invulnerability = true;
   }
 }
 public void keyReleased() {
@@ -70,5 +74,16 @@ public void keyReleased() {
   }
   else if (key == 'd') {
     turnr = false;
+  }
+}
+public void dealWithInvulnerability() {
+  if (invulnerability == true) {
+    timeInvul++;
+  }
+  if (timeInvul >= 30) {
+    invulnerability = false;
+  }
+  if (invulnerability == false) {
+    timeInvul = 0;
   }
 }

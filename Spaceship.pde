@@ -14,8 +14,7 @@ class Spaceship extends Floater  {
   public Spaceship() {
     corners = 12;
     xCorners = new int[corners];
-    yCorners = new int[corners];
-    
+    yCorners = new int[corners];    
     for (int i = 0; i < 12; i++) {
       xCorners[i] = (int)(xCornList[i]*1.3);
       yCorners[i] = (int)(yCornList[i]*1.3);

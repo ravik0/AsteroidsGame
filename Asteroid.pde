@@ -12,6 +12,7 @@ class Asteroids extends Floater {
   public double getDirectionY() { return myDirectionY; }
   public void setPointDirection(int degrees) { myPointDirection = degrees; }
   public double getPointDirection() { return myPointDirection; }
+  
   public Asteroids() {
     corners = 12;
     xCorners = new int[corners];

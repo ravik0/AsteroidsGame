@@ -11,6 +11,7 @@ class Spaceship extends Floater  {
   public double getDirectionY() { return myDirectionY; }
   public void setPointDirection(int degrees) { myPointDirection = degrees; }
   public double getPointDirection() { return myPointDirection; }
+  public void setColor(color value) { myColor = value; }
   public Spaceship() {
     corners = 12;
     xCorners = new int[corners];
@@ -34,5 +35,8 @@ class Spaceship extends Floater  {
     line(-10,0,-5,0);
     line(-10,-2,-5,-2);
     rotate(-1*(float)myPointDirection*PI/180);
+  }
+  public void collisionDetector() {
+    //int distAstSp = 
   }
 }

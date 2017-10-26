@@ -1,19 +1,23 @@
 Spaceship bob;
 ArrayList <Asteroids> joe;
 ArrayList <Bullets> bull;
-Stars[] bill = new Stars[(int)(Math.random()*20)+12];
-boolean forward, back, turnl, turnr = false;
+Stars[] bill = new Stars[(int)(Math.random()*40)+12];
+boolean forward, back, turnl, turnr = false; //movement variables
 boolean invulnerability = false; //when teleporting, make sure doesn't get killed
-boolean shooter = false;
+boolean shooter = false; //is bob shooting or not
+boolean shooterAdd = true; //ammo regen
 int timeInvul = 0; //how long invulnerability lasts
-int asteroidAmount = 10;
-int bulletAmount = 10;
-int timeShoot = 0;
-color invulColor = #FF0000;
-color spaceshipInitialColor = #3EA9EA;
+int timeRegen = 0; //variable to let me control how fast ammo regens
+int asteroidAmount = 10; //how many asteroids
+int bulletAmount = 12; //ammo
+int timeShoot = 0; //how often you can shoot
+int health = 7; //health
+int score = 0; //score, + if you destroy asteroid, - if you get hit
+color invulColor = #FF0000; //color when invulnerable
+color spaceshipInitialColor = #3EA9EA; //color when doing usual stuff
 public void setup() {
   bob = new Spaceship();
-  size(400, 400);
+  size(500,600);
   for (int i = 0; i < bill.length; i++) {
     bill[i] = new Stars();
   }
@@ -29,10 +33,12 @@ public void draw() {
   bob.move();
   collisionDetection();
   dealWithInvulnerability();
+  ammoRegen();
+  infoArea();
   for(int i = 0; i < bull.size(); i++) {
     bull.get(i).show();
     bull.get(i).move();
-    if(bull.get(i).getX() > width || bull.get(i).getX() < 0 || bull.get(i).getY() > height || bull.get(i).getY() < 0) {
+    if(bull.get(i).getX() > width || bull.get(i).getX() < 0 || bull.get(i).getY() > 500 || bull.get(i).getY() < 0) {
       bull.remove(i);
     }
   }
@@ -58,7 +64,7 @@ public void draw() {
   }
   if (shooter == true) {
     timeShoot++;
-    if (bulletAmount > 0 && timeShoot%5 == 0) {
+    if (bulletAmount > 0 && timeShoot%7 == 0) {
       bob.shoot();
       bulletAmount-=1;
     }
@@ -87,6 +93,7 @@ public void keyPressed() {
   }
   else if (key == ' ') {
     shooter = true;
+    shooterAdd = false;
   }
 }
 public void keyReleased() {
@@ -104,7 +111,7 @@ public void keyReleased() {
   }
   else if (key == ' ') {
     shooter = false;
-    bulletAmount+=10;
+    shooterAdd = true;
   }
 }
 public void dealWithInvulnerability() {
@@ -124,7 +131,24 @@ public void dealWithInvulnerability() {
 public void collisionDetection() {
   for(int i = 0; i < joe.size(); i++) {
     if(dist(bob.getX(),bob.getY(),joe.get(i).getX(),joe.get(i).getY()) <= 20) {
-      joe.remove(i);
+      if(invulnerability == true) {
+        joe.remove(i);
+      }
+      if (invulnerability == false) {
+        joe.remove(i);
+        health--;
+        score--;
+      }
+    }
+  }
+  for(int i = 0; i < bull.size(); i++) {
+    for(int j = 0; j < joe.size(); j++) {
+      if(dist(joe.get(j).getX(),joe.get(j).getY(),bull.get(i).getX(),bull.get(i).getY()) <= 8) {
+        bull.remove(i);
+        joe.remove(j);
+        score++;
+        break;
+      }
     }
   }
   if (joe.size() == 0) {
@@ -133,6 +157,38 @@ public void collisionDetection() {
     }
     asteroidAmount++;
   }
-  //this function is built for collision btwn asteroid & player
-  //also built so whenever all asteroids gone, new ones spawn.
+  //1st function: asteroid & player
+  //2nd function: bullet & asteroid
+  //3rd function: respawn asteroids
+}
+
+public void ammoRegen() {
+  if (shooterAdd == true) {
+    timeRegen++;
+    if (bulletAmount < 12 & timeRegen%8 == 0) {
+      bulletAmount++;
+    } 
+  }
+  if (shooterAdd == false) {
+    timeRegen = 0;
+  }
+}
+
+public void infoArea() {
+  fill(#D1B685);
+  stroke(#D1B685);
+  rect(0,500,500,100);
+  textAlign(CENTER);
+  fill(#0423DE);
+  text("Ammo", 40, 520);
+  fill(#DE04D3);
+  text(bulletAmount,40,530);
+  fill(255,0,0);
+  rect(36,570,5,-3*bulletAmount);
+  fill(#0423DE);
+  text("Health", 100, 520);
+  fill(#DE04D3);
+  text(health,100,530);
+  fill(255,0,0);
+  rect(96,555,5,-3*health);
 }

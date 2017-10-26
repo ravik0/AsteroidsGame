@@ -17,12 +17,12 @@ class Spaceship extends Floater  {
     xCorners = new int[corners];
     yCorners = new int[corners];    
     for (int i = 0; i < 12; i++) {
-      xCorners[i] = (int)(xCornListSpace[i]*1.3);
-      yCorners[i] = (int)(yCornListSpace[i]*1.3);
+      xCorners[i] = (int)(xCornListSpace[i]*1.6);
+      yCorners[i] = (int)(yCornListSpace[i]*1.6);
     }
     myColor = #3EA9EA;
-    myCenterX = 200;
-    myCenterY = 200;
+    myCenterX = 250;
+    myCenterY = 250;
     myDirectionX = 0;
     myDirectionY = 0;
     myPointDirection = 0;
@@ -38,5 +38,13 @@ class Spaceship extends Floater  {
   }
   public void shoot() {
     bull.add(new Bullets(bob));
+  }
+  public void move() {
+    myCenterX += myDirectionX;    
+    myCenterY += myDirectionY;     
+    if(myCenterX > 500) { myCenterX = 0; }  
+    else if (myCenterX<0) { myCenterX = 500; }
+    if(myCenterY > 500) { myCenterY = 0; }
+    else if (myCenterY < 0) { myCenterY = 500; }
   }
 }

@@ -1,5 +1,5 @@
-double xCornList[] = {-3,-2,-1,0,1,3,6,3,1,0,-1,-2};
-double yCornList[] = {0,1,3,4,3,2,0,-2,-3,-4,-3,-1};
+double xCornListSpace[] = {-3,-2,-1,0,1,3,6,3,1,0,-1,-2};
+double yCornListSpace[] = {0,1,3,4,3,2,0,-2,-3,-4,-3,-1};
 class Spaceship extends Floater  { 
   public void setX(int x) { myCenterX = x; }
   public int getX() { return (int)myCenterX; }
@@ -17,15 +17,15 @@ class Spaceship extends Floater  {
     xCorners = new int[corners];
     yCorners = new int[corners];    
     for (int i = 0; i < 12; i++) {
-      xCorners[i] = (int)(xCornList[i]*1.3);
-      yCorners[i] = (int)(yCornList[i]*1.3);
+      xCorners[i] = (int)(xCornListSpace[i]*1.3);
+      yCorners[i] = (int)(yCornListSpace[i]*1.3);
     }
     myColor = #3EA9EA;
     myCenterX = 200;
     myCenterY = 200;
     myDirectionX = 0;
     myDirectionY = 0;
-    myPointDirection = -90;
+    myPointDirection = 0;
   }
   public void rocketCreater() {
     translate((float)myCenterX,(float)myCenterY);
@@ -36,7 +36,7 @@ class Spaceship extends Floater  {
     line(-10,-2,-5,-2);
     rotate(-1*(float)myPointDirection*PI/180);
   }
-  public void collisionDetector() {
-    //int distAstSp = 
+  public void shoot() {
+    bull.add(new Bullets(bob));
   }
 }

@@ -1,7 +1,6 @@
-double xCornerLAst[] = {-7,-5,-3,0,3,5,7,5,3,0,-3,-5};
-double yCornerLAst[] = {0,2,5,7,5,2,0,-2,-5,-7,-5,-2};
-class Asteroids extends Floater {
-  private int rotationSpeed;
+int[] xCornLBull = {-4,0,4,0};
+int[] yCornLBull = {0,2,0,-2};
+class Bullets extends Floater {
   public void setX(int x) { myCenterX = x; }
   public int getX() { return (int)myCenterX; }
   public void setY(int y) { myCenterY = y; }
@@ -12,25 +11,24 @@ class Asteroids extends Floater {
   public double getDirectionY() { return myDirectionY; }
   public void setPointDirection(int degrees) { myPointDirection = degrees; }
   public double getPointDirection() { return myPointDirection; }
-  
-  public Asteroids() {
-    corners = 12;
+  public Bullets(Spaceship shipper) {
+    myCenterX = shipper.getX();
+    myCenterY = shipper.getY();
+    myPointDirection = shipper.getPointDirection();
+    myDirectionX = 5*Math.cos(myPointDirection*(Math.PI/180)) + shipper.getDirectionX();
+    myDirectionY = 5*Math.sin(myPointDirection*(Math.PI/180)) + shipper.getDirectionY();  
+    myColor = #28EA94;
+    corners = 4;
     xCorners = new int[corners];
     yCorners = new int[corners];
-    for (int i = 0; i < 12; i++) {
-      xCorners[i] = (int)(1*xCornerLAst[i]);
-      yCorners[i] = (int)(1*yCornerLAst[i]);
+    for (int i = 0; i < corners; i++) {
+      xCorners[i] = xCornLBull[i];
+      yCorners[i] = yCornLBull[i];
     }
-    myColor = #CE7A0A;
-    myCenterX = Math.random()*400+1;
-    myCenterY = Math.random()*400+1;
-    myDirectionX = Math.random()*1.3;
-    myDirectionY = Math.random()*1.3;
-    myPointDirection = 90;
-    rotationSpeed = (int)(Math.random()*5+1);
   }
   public void move() {
-    turn(rotationSpeed);
-    super.move();
+    myCenterX+=myDirectionX;
+    myCenterY+=myDirectionY;
+  
   }
 }

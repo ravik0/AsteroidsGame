@@ -13,6 +13,7 @@ int bulletAmount = 12; //ammo
 int timeShoot = 0; //how often you can shoot
 int health = 7; //health
 int score = 0; //score, + if you destroy asteroid, - if you get hit
+int resetAmount = 3;
 color invulColor = #FF0000; //color when invulnerable
 color spaceshipInitialColor = #3EA9EA; //color when doing usual stuff
 public void setup() {
@@ -29,12 +30,9 @@ public void setup() {
 }
 public void draw() {
   background(0);
+  //creation of objects
   bob.show();
   bob.move();
-  collisionDetection();
-  dealWithInvulnerability();
-  ammoRegen();
-  infoArea();
   for(int i = 0; i < bull.size(); i++) {
     bull.get(i).show();
     bull.get(i).move();
@@ -49,18 +47,24 @@ public void draw() {
     joe.get(i).show();
     joe.get(i).move();
   }
+  //function calling
+  infoArea();
+  collisionDetection();
+  dealWithInvulnerability();
+  ammoRegen();
+  //defining movement
   if (forward == true) {
-    bob.accelerate(0.05);
+    bob.accelerate(0.037);
     bob.rocketCreater();
   }
   if (back == true) {
-    bob.accelerate(-0.05);
+    bob.accelerate(-0.037);
   }
   if (turnl == true) {
-    bob.turn(-10);
+    bob.turn(-7);
   }
   if (turnr == true) {
-    bob.turn(10);
+    bob.turn(7);
   }
   if (shooter == true) {
     timeShoot++;
@@ -83,13 +87,14 @@ public void keyPressed() {
   else if (key == 'd') {
     turnr = true;
   } 
-  else if (key == 'h') {
+  else if (key == 'h' && resetAmount > 0) {
     bob.setX(((int)(Math.random()*400)));
     bob.setY(((int)(Math.random()*400)));
     bob.setDirectionX(0);
     bob.setDirectionY(0);
     bob.setPointDirection((int)Math.random()*361);
     invulnerability = true;
+    resetAmount-=1;
   }
   else if (key == ' ') {
     shooter = true;

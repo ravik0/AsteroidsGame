@@ -37,7 +37,7 @@ public void setup() {
     starsTitle[i] = new Stars();
   }
   asteroidsTitle = new ArrayList <Asteroids>();
-  for (int i = 0; i <= 10; i++) {
+  for (int i = 0; i < 10; i++) {
     asteroidsTitle.add(i, new Asteroids());
   }
   //game setup 
@@ -112,11 +112,18 @@ public void keyReleased() {
   }
 }
 public void mousePressed() {
-  if (mouseX >= 180 && mouseX <= 330 && mouseY >= 200 && mouseY <= 250) {
-    gameState = 2; 
+  if (gameState == 0) {
+    if (mouseX >= 180 && mouseX <= 330 && mouseY >= 200 && mouseY <= 250) {
+      gameState = 2; 
+    }
+    else if (mouseX >= 200 && mouseX <= 310 && mouseY >= 300 && mouseY <= 340) {
+      gameState = 1;
+    }
   }
-  else if (mouseX >= 200 && mouseX <= 310 && mouseY >= 300 && mouseY <= 340) {
-    gameState = 1;
+  if (gameState == 1) {
+    if (mouseX >= 210 && mouseX <= 290 && mouseY >= 540 && mouseY <= 580) {
+      gameState = 2;
+    }
   }
 }
 //game functionality functions
@@ -149,7 +156,7 @@ public void collisionDetection() {
   }
   for(int i = 0; i < bull.size(); i++) {
     for(int j = 0; j < joe.size(); j++) {
-      if(dist(joe.get(j).getX(),joe.get(j).getY(),bull.get(i).getX(),bull.get(i).getY()) <= 8) {
+      if(dist(joe.get(j).getX(),joe.get(j).getY(),bull.get(i).getX(),bull.get(i).getY()) <= 12) {
         bull.remove(i);
         joe.remove(j);
         score++;
@@ -181,6 +188,7 @@ public void ammoRegen() {
 }
 //gamestate functions
 public void titleScreen() {
+  //gamestate 0
   background(0);
   for (int i = 0; i < starsTitle.length; i++) {
     starsTitle[i].show();
@@ -213,8 +221,41 @@ public void titleScreen() {
 }
 public void ruleScreen() {
   //gamestate 1
+  background(0);
+  for (int i = 0; i < starsTitle.length; i++) {
+    starsTitle[i].show();
+  }
+  for (int i = 0; i < asteroidsTitle.size(); i++) {
+    asteroidsTitle.get(i).show();
+    asteroidsTitle.get(i).move();
+  }
+  noStroke();
+  fill(255);
+  rect(40,90,420,420);
+  textSize(15);
+  fill(#FF0011);
+  textAlign(250,250);
+  text("CONTROLS",200,115);
+  text("RULES", 200, 210);
+  fill(0);
+  textSize(12);
+  text("To move, use WASD. Shoot with the spacebar", 100, 140);
+  text("W forward, A left, S backwards, and D right", 100, 160);
+  text("Press H to teleport somewhere else and reset velocity", 100, 180);
+  text("The game starts with 10 asteroids", 100, 230);
+  text("As you progress, more and more asteroids will spawn", 100, 250);
+  text("You have 7 health to start, get hit 7 times and you're dead", 100, 270);
+  text("Your score will increase as you destroy asteroids",100,290);
+  text("It will also decrease as you get hit",100,310);
+  text("You can also only teleport 3 times, so make good use of it", 100, 330);
+  fill(#DB5069);
+  rect(210,540,80,40);
+  fill(#1EDFE8);
+  textSize(20);
+  text("Play", 230,570);
 }
 public void asteroidGame() {
+  //gamestate 2
   background(0);
   //creation of objects
   bob.show();
@@ -247,10 +288,10 @@ public void asteroidGame() {
     bob.accelerate(-0.037);
   }
   if (turnl == true) {
-    bob.turn(-7);
+    bob.turn(-5);
   }
   if (turnr == true) {
-    bob.turn(7);
+    bob.turn(5);
   }
   if (shooter == true) {
     timeShoot++;
@@ -264,6 +305,8 @@ public void gameOver() {
   //gamestate 3
 }
 public void infoArea() {
+  //own function cause looks cleaner on the titlescreen function
+  textSize(12);
   fill(#D1B685);
   stroke(#D1B685);
   rect(0,500,500,100);
@@ -280,4 +323,6 @@ public void infoArea() {
   text(health,100,530);
   fill(255,0,0);
   rect(96,555,5,-3*health);
+    fill(#0423DE);
+  text("Score",160,520);
 }

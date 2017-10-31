@@ -2,7 +2,6 @@
 all code will be inside functions at the bottom 
 this is to allow for better transitions between the states of the program
 note(s) to self: add transition screen btwn title and "play the game"
-do not press "rules" yet, functionality unfinished
 add possible lives mechanic, so out of health -1 life, + 7 health
 maybe code enemy NPC? that'd be some crazy ai 
 powerups
@@ -14,6 +13,7 @@ ArrayList <Asteroids> asteroidsTitle;
 Spaceship bob;
 ArrayList <Asteroids> joe;
 ArrayList <Bullets> bull;
+ArrayList <Spaceship> lives; //lives mechanic.
 Stars[] bill = new Stars[(int)(Math.random()*40)+12];
 boolean forward, back, turnl, turnr = false; //movement variables
 boolean invulnerability = false; //when teleporting, make sure doesn't get killed
@@ -27,7 +27,7 @@ int timeShoot = 0; //how often you can shoot
 int health = 7; //health
 int score = 0; //score, + if you destroy asteroid, - if you get hit
 int resetAmount = 3; //how many times can you teleport
-int gameState = 0; //what section of the game are we on? title, gameover, etc
+int gameState = 3; //what section of the game are we on? title, gameover, etc
 int round = 1; //what round of the game are on?
 color invulColor = #FF0000; //color when invulnerable
 color spaceshipInitialColor = #3EA9EA; //color when doing usual stuff
@@ -51,6 +51,8 @@ public void setup() {
     joe.add(i, new Asteroids());
   }
   bull = new ArrayList <Bullets>();
+  lives = new ArrayList <Spaceship>();
+  lives.add(0, new Spaceship());
 }
 public void draw() {
   if (gameState == 0) {
@@ -125,6 +127,29 @@ public void mousePressed() {
       gameState = 2;
     }
   }
+  if (gameState == 3) {
+    if (mouseX >= 50 && mouseX <= 150 && mouseY >= 530 && mouseY <= 570) {
+      gameState = 0;
+      timeInvul = 0; 
+      timeRegen = 0; 
+      asteroidAmount = 10; 
+      bulletAmount = 12; 
+      timeShoot = 0; 
+      health = 7; 
+      score = 0; 
+      resetAmount = 3; 
+      round = 1; 
+      for (int i = 0; i < joe.size(); i++) {
+        joe.remove(i);
+      }
+      for (int i = 0; i < 10; i++) {
+        joe.add(i, new Asteroids());
+      }
+    }
+    if (mouseX >= 350 && mouseX <= 450 && mouseY >= 530 && mouseY <= 570) {
+      gameState = 2;
+    }
+  }
 }
 //game functionality functions
 public void dealWithInvulnerability() {
@@ -141,7 +166,7 @@ public void dealWithInvulnerability() {
   }
   //if you press h, you'll be invulnerable for a bit.
 }
-public void collisionDetection() {
+public void detectionFunction() {
   for(int i = 0; i < joe.size(); i++) {
     if(dist(bob.getX(),bob.getY(),joe.get(i).getX(),joe.get(i).getY()) <= 20) {
       if(invulnerability == true) {
@@ -169,10 +194,21 @@ public void collisionDetection() {
       joe.add(i, new Asteroids());
     }
     asteroidAmount++;
+    round++;
+  }
+  if (health <= 0) {
+    if (lives.size() > 0) {
+      health = 7;
+      lives.remove(lives.size()-1);
+    }
+    else if (lives.size() == 0) {
+      gameState = 3;
+    }
   }
   //1st function: asteroid & player
   //2nd function: bullet & asteroid
   //3rd function: respawn asteroids
+  //4th function: game over
 }
 
 public void ammoRegen() {
@@ -276,7 +312,7 @@ public void asteroidGame() {
   }
   //function calling
   infoArea();
-  collisionDetection();
+  detectionFunction();
   dealWithInvulnerability();
   ammoRegen();
   //defining movement
@@ -302,7 +338,26 @@ public void asteroidGame() {
   }
 }
 public void gameOver() {
-  //gamestate 3
+    background(0);
+  for (int i = 0; i < starsTitle.length; i++) {
+    starsTitle[i].show();
+  }
+  for (int i = 0; i < asteroidsTitle.size(); i++) {
+    asteroidsTitle.get(i).show();
+    asteroidsTitle.get(i).move();
+  }
+  stroke(#E6F289);
+  fill(#E6F289);
+  rect(0,500,500,100);
+  fill(#9908C6);
+  rect(50,530,100,40);
+  fill(#B94A09);
+  rect(350,530,100,40);
+  fill(255);
+  textSize(13);
+  text("Return to Title",55,555);
+  text("Play Again",370,555);
+  
 }
 public void infoArea() {
   //own function cause looks cleaner on the titlescreen function
@@ -323,6 +378,20 @@ public void infoArea() {
   text(health,100,530);
   fill(255,0,0);
   rect(96,555,5,-3*health);
-    fill(#0423DE);
+  fill(#0423DE);
   text("Score",160,520);
+  text("Round Number", 160, 550);
+  fill(#DE04D3);
+  text(score,160,530);
+  text(round,160,560);
+  fill(#0423DE);
+  text("Lives Remaining", 280, 520);
+  for(int i = 0; i < lives.size(); i++) {
+    lives.get(i).setX(280);
+    lives.get(i).setY(i*21+530);
+    lives.get(i).show();
+  }
+  if (lives.size() == 0) {
+    text("None",280,540);
+  }
 }

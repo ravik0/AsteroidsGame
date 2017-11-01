@@ -365,7 +365,8 @@ public void asteroidGame() {
 }
 public void gameOver() {
   //gamestate 3
-    background(0);
+  int roundSurvived = round-1;
+  background(0);
   for (int i = 0; i < starsTitle.length; i++) {
     starsTitle[i].show();
   }
@@ -385,7 +386,37 @@ public void gameOver() {
   textAlign(LEFT);
   text("Return to Title",55,555);
   text("Play Again",370,555);
-  
+  fill(255);
+  rect(150,150,200,200);
+  fill(0);
+  textSize(20);
+  text("YOU DIED", 200,180);
+  textSize(11);
+  if (round == 1) {
+    text("-You survived 0 rounds",155,220);
+  }
+  if (round == 2) {
+    text("-You survived 1 round",155,220);
+  }
+  if (round > 2) {
+    text("-You survived " + roundSurvived + " rounds",155,220);
+  }
+  text("-Your final score was " + score + " points", 155, 240);
+  if (joe.size() == 1) {
+    text("-There was 1 asteroid remaining",155,260);
+  }
+  if (joe.size() > 1) {
+    text("-There were " + joe.size() + " asteroids remaining",155,260);
+  }
+  if (score <= 10) {
+    text("Better luck next time!", 190, 300);
+  }
+  if (score > 10 && score <= 30) {
+    text("You did great!", 210,300);
+  }
+  if (score > 30) {
+    text("Amazing work!", 210, 300);
+  }
 }
 public void infoArea() {
   //own function cause looks cleaner on the titlescreen function
@@ -422,4 +453,8 @@ public void infoArea() {
   if (lives.size() == 0) {
     text("None",280,540);
   }
+  fill(#0423DE);
+  text("Teleports Remaining",400,520);
+  fill(#DE04D3);
+  text(resetAmount,400,535);
 }

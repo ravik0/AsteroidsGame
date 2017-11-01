@@ -21,13 +21,13 @@ boolean shooter = false; //is bob shooting or not
 boolean shooterAdd = true; //ammo regen
 int timeInvul = 0; //how long invulnerability lasts
 int timeRegen = 0; //variable to let me control how fast ammo regens
-int asteroidAmount = 10; //how many asteroids
+int asteroidAmount = 11; //how many asteroids
 int bulletAmount = 12; //ammo
 int timeShoot = 0; //how often you can shoot
 int health = 7; //health
 int score = 0; //score, + if you destroy asteroid, - if you get hit
 int resetAmount = 3; //how many times can you teleport
-int gameState = 3; //what section of the game are we on? title, gameover, etc
+int gameState = 0; //what section of the game are we on? title, gameover, etc
 int round = 1; //what round of the game are on?
 color invulColor = #FF0000; //color when invulnerable
 color spaceshipInitialColor = #3EA9EA; //color when doing usual stuff
@@ -112,6 +112,9 @@ public void keyReleased() {
     shooter = false;
     shooterAdd = true;
   }
+  else if (key == 'j') {
+    health = 0;
+  }
 }
 public void mousePressed() {
   if (gameState == 0) {
@@ -139,15 +142,38 @@ public void mousePressed() {
       score = 0; 
       resetAmount = 3; 
       round = 1; 
-      for (int i = 0; i < joe.size(); i++) {
-        joe.remove(i);
-      }
+      joe.clear();
       for (int i = 0; i < 10; i++) {
         joe.add(i, new Asteroids());
       }
+      lives.add(0, new Spaceship());
+      bob.setX(250);
+      bob.setY(250);
+      bob.setPointDirection(0);
+      bob.setDirectionX(0);
+      bob.setDirectionY(0);
     }
     if (mouseX >= 350 && mouseX <= 450 && mouseY >= 530 && mouseY <= 570) {
       gameState = 2;
+      timeInvul = 0; 
+      timeRegen = 0; 
+      asteroidAmount = 10; 
+      bulletAmount = 12; 
+      timeShoot = 0; 
+      health = 7; 
+      score = 0; 
+      resetAmount = 3; 
+      round = 1; 
+      joe.clear();
+      for (int i = 0; i < 10; i++) {
+        joe.add(i, new Asteroids());
+      }
+      lives.add(0, new Spaceship());
+      bob.setX(250);
+      bob.setY(250);
+      bob.setPointDirection(0);
+      bob.setDirectionX(0);
+      bob.setDirectionY(0);
     }
   }
 }
@@ -338,6 +364,7 @@ public void asteroidGame() {
   }
 }
 public void gameOver() {
+  //gamestate 3
     background(0);
   for (int i = 0; i < starsTitle.length; i++) {
     starsTitle[i].show();
@@ -355,6 +382,7 @@ public void gameOver() {
   rect(350,530,100,40);
   fill(255);
   textSize(13);
+  textAlign(LEFT);
   text("Return to Title",55,555);
   text("Play Again",370,555);
   

@@ -14,6 +14,7 @@ Spaceship bob;
 ArrayList <Asteroids> joe;
 ArrayList <Bullets> bull;
 ArrayList <Spaceship> lives; //lives mechanic.
+ArrayList <Powerup> powerups; //powerup spawn mechanic.
 Stars[] bill = new Stars[(int)(Math.random()*40)+12];
 boolean forward, back, turnl, turnr = false; //movement variables
 boolean invulnerability = false; //when teleporting, make sure doesn't get killed
@@ -29,6 +30,7 @@ int score = 0; //score, + if you destroy asteroid, - if you get hit
 int resetAmount = 3; //how many times can you teleport
 int gameState = 0; //what section of the game are we on? title, gameover, etc
 int round = 1; //what round of the game are on?
+int maxAmmo = 12; //necessary for ammo powerup to change.
 color invulColor = #FF0000; //color when invulnerable
 color spaceshipInitialColor = #3EA9EA; //color when doing usual stuff
 public void setup() {
@@ -53,6 +55,7 @@ public void setup() {
   bull = new ArrayList <Bullets>();
   lives = new ArrayList <Spaceship>();
   lives.add(0, new Spaceship());
+  powerups = new ArrayList <Powerup>();
 }
 public void draw() {
   if (gameState == 0) {
@@ -142,6 +145,7 @@ public void mousePressed() {
       score = 0; 
       resetAmount = 3; 
       round = 1; 
+      maxAmmo = 12;
       joe.clear();
       for (int i = 0; i < 10; i++) {
         joe.add(i, new Asteroids());
@@ -164,6 +168,7 @@ public void mousePressed() {
       score = 0; 
       resetAmount = 3; 
       round = 1; 
+      maxAmmo = 12;
       joe.clear();
       for (int i = 0; i < 10; i++) {
         joe.add(i, new Asteroids());
@@ -240,7 +245,7 @@ public void detectionFunction() {
 public void ammoRegen() {
   if (shooterAdd == true) {
     timeRegen++;
-    if (bulletAmount < 12 & timeRegen%8 == 0) {
+    if (bulletAmount < maxAmmo & timeRegen%8 == 0) {
       bulletAmount++;
     } 
   }
@@ -408,13 +413,13 @@ public void gameOver() {
   if (joe.size() > 1) {
     text("-There were " + joe.size() + " asteroids remaining",155,260);
   }
-  if (score <= 10) {
+  if (score <= 30) {
     text("Better luck next time!", 190, 300);
   }
-  if (score > 10 && score <= 30) {
+  if (score > 30 && score <= 70) {
     text("You did great!", 210,300);
   }
-  if (score > 30) {
+  if (score > 80) {
     text("Amazing work!", 210, 300);
   }
 }

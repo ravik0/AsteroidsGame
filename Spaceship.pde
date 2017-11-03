@@ -12,14 +12,15 @@ class Spaceship extends Floater  {
   public void setPointDirection(int degrees) { myPointDirection = degrees; }
   public double getPointDirection() { return myPointDirection; }
   public void setColor(color value) { myColor = value; }
-  public Spaceship() {
+  public Spaceship(double sizeValue) {
     corners = 12;
     xCorners = new int[corners];
     yCorners = new int[corners];    
     for (int i = 0; i < 12; i++) {
-      xCorners[i] = (int)(xCornListSpace[i]*1.6);
-      yCorners[i] = (int)(yCornListSpace[i]*1.6);
+      xCorners[i] = (int)(xCornListSpace[i]*sizeValue);
+      yCorners[i] = (int)(yCornListSpace[i]*sizeValue);
     }
+    //sizevalue allows me to scale the spaceships for the powerup section instead of making an entirely new spaceship class
     myColor = #3EA9EA;
     myCenterX = 250;
     myCenterY = 250;

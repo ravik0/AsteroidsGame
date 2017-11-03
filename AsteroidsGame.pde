@@ -43,7 +43,7 @@ public void setup() {
     asteroidsTitle.add(i, new Asteroids());
   }
   //game setup 
-  bob = new Spaceship();
+  bob = new Spaceship(1.6);
   size(500,600);
   for (int i = 0; i < bill.length; i++) {
     bill[i] = new Stars();
@@ -54,7 +54,7 @@ public void setup() {
   }
   bull = new ArrayList <Bullets>();
   lives = new ArrayList <Spaceship>();
-  lives.add(0, new Spaceship());
+  lives.add(0, new Spaceship(1.6));
   powerups = new ArrayList <Powerup>();
 }
 public void draw() {
@@ -150,7 +150,7 @@ public void mousePressed() {
       for (int i = 0; i < 10; i++) {
         joe.add(i, new Asteroids());
       }
-      lives.add(0, new Spaceship());
+      lives.add(0, new Spaceship(1.6));
       bob.setX(250);
       bob.setY(250);
       bob.setPointDirection(0);
@@ -173,7 +173,7 @@ public void mousePressed() {
       for (int i = 0; i < 10; i++) {
         joe.add(i, new Asteroids());
       }
-      lives.add(0, new Spaceship());
+      lives.add(0, new Spaceship(1.6));
       bob.setX(250);
       bob.setY(250);
       bob.setPointDirection(0);
@@ -213,7 +213,18 @@ public void detectionFunction() {
   for(int i = 0; i < bull.size(); i++) {
     for(int j = 0; j < joe.size(); j++) {
       if(dist(joe.get(j).getX(),joe.get(j).getY(),bull.get(i).getX(),bull.get(i).getY()) <= 12) {
+        double probability = Math.random();
         bull.remove(i);
+        if (powerups.size() < 3 && probability < 0.1) {
+          double powerupProb = Math.random();
+          if (powerupProb < 0.33 && lives.size() < 3) {
+            powerups.add(new PowerupLives(joe.get(j)));
+          }
+          if (powerupProb >= 0.33 && powerupProb < 0.66) {
+          }
+          if (powerupProb >= 0.66) {
+          }  
+        }
         joe.remove(j);
         score++;
         break;
@@ -236,10 +247,21 @@ public void detectionFunction() {
       gameState = 3;
     }
   }
+  for (int i = 0; i < bull.size(); i++) {
+    for (int j = 0; j < powerups.size(); j++) {
+      if(dist(powerups.get(j).getX(),powerups.get(j).getY(),bull.get(i).getX(),bull.get(i).getY()) <= 12) {
+        powerups.get(j).effect();
+        powerups.remove(j);
+        break;
+      }
+    }
+  }
+  
   //1st function: asteroid & player
   //2nd function: bullet & asteroid
   //3rd function: respawn asteroids
   //4th function: game over
+  //5th function: bullet & powerup
 }
 
 public void ammoRegen() {
@@ -336,6 +358,9 @@ public void asteroidGame() {
   }
   for (int i = 0; i < bill.length; i++) {
     bill[i].show();
+  }
+  for (int i = 0; i < powerups.size(); i++) {
+    powerups.get(i).show();
   }
   for (int i = 0; i < joe.size(); i++) {
     joe.get(i).show();

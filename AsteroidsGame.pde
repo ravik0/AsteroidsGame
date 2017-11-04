@@ -1,10 +1,8 @@
 /*
 all code will be inside functions at the bottom 
 this is to allow for better transitions between the states of the program
-note(s) to self: add transition screen btwn title and "play the game"
-add possible lives mechanic, so out of health -1 life, + 7 health
+note(s) to self: add transition screen btwn title and "play the game"out of health -1 life, + 7 health
 maybe code enemy NPC? that'd be some crazy ai 
-powerups
 */
 //title screen variables
 Stars[] starsTitle = new Stars[30];
@@ -151,6 +149,8 @@ public void mousePressed() {
         joe.add(i, new Asteroids());
       }
       lives.add(0, new Spaceship(1.6));
+      powerups.clear();
+      bull.clear();
       bob.setX(250);
       bob.setY(250);
       bob.setPointDirection(0);
@@ -174,6 +174,8 @@ public void mousePressed() {
         joe.add(i, new Asteroids());
       }
       lives.add(0, new Spaceship(1.6));
+      powerups.clear();
+      bull.clear();
       bob.setX(250);
       bob.setY(250);
       bob.setPointDirection(0);
@@ -215,14 +217,16 @@ public void detectionFunction() {
       if(dist(joe.get(j).getX(),joe.get(j).getY(),bull.get(i).getX(),bull.get(i).getY()) <= 12) {
         double probability = Math.random();
         bull.remove(i);
-        if (powerups.size() < 3 && probability < 0.1) {
+        if (powerups.size() < 3 && probability < 0.06) {
           double powerupProb = Math.random();
           if (powerupProb < 0.33 && lives.size() < 3) {
             powerups.add(new PowerupLives(joe.get(j)));
           }
-          if (powerupProb >= 0.33 && powerupProb < 0.66) {
+          if (powerupProb >= 0.33 && powerupProb < 0.66 && maxAmmo < 42) {
+            powerups.add(new PowerupMoreAmmo(joe.get(j)));
           }
-          if (powerupProb >= 0.66) {
+          if (powerupProb >= 0.66 && resetAmount < 5) {
+            powerups.add(new PowerupTeleport(joe.get(j)));
           }  
         }
         joe.remove(j);
@@ -232,6 +236,7 @@ public void detectionFunction() {
     }
   }
   if (joe.size() == 0) {
+    powerups.clear();
     for (int i = 0; i <= asteroidAmount; i++) {
       joe.add(i, new Asteroids());
     }
@@ -460,7 +465,7 @@ public void infoArea() {
   fill(#DE04D3);
   text(bulletAmount,40,530);
   fill(255,0,0);
-  rect(36,570,5,-3*bulletAmount);
+  rect(36,570,5,-36*bulletAmount/maxAmmo);
   fill(#0423DE);
   text("Health", 100, 520);
   fill(#DE04D3);

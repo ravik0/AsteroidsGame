@@ -26,6 +26,21 @@ class Bullets extends Floater {
       yCorners[i] = yCornLBull[i];
     }
   }
+  public Bullets() {
+    myCenterX = 0;
+    myCenterY = 0;
+    myPointDirection = 0;
+    myDirectionX = 0;
+    myDirectionY = 0;  
+    myColor = #28EA94;
+    corners = 4;
+    xCorners = new int[corners];
+    yCorners = new int[corners];
+    for (int i = 0; i < corners; i++) {
+      xCorners[i] = xCornLBull[i];
+      yCorners[i] = yCornLBull[i];
+    }
+  }
   public void move() {
     myCenterX+=myDirectionX;
     myCenterY+=myDirectionY;

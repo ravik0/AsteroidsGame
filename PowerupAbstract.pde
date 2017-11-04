@@ -11,5 +11,6 @@ abstract class Powerup {
     rect(myX,myY,11,11);
     //this will be super.move(), put own design ontop in extended class
   }
+  abstract public void showRule(int x, int y);
   abstract public void effect();
 }

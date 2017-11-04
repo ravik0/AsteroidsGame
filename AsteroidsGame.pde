@@ -1,12 +1,16 @@
 /*
 all code will be inside functions at the bottom 
 this is to allow for better transitions between the states of the program
-note(s) to self: add transition screen btwn title and "play the game"out of health -1 life, + 7 health
+note(s) to self: add transition screen btwn title and "play the game"
 maybe code enemy NPC? that'd be some crazy ai 
 */
 //title screen variables
 Stars[] starsTitle = new Stars[30];
 ArrayList <Asteroids> asteroidsTitle;
+//rule screen variables
+Powerup powerLife;
+Powerup powerAmmo;
+Powerup powerTeleport;
 //game variables
 Spaceship bob;
 ArrayList <Asteroids> joe;
@@ -18,6 +22,7 @@ boolean forward, back, turnl, turnr = false; //movement variables
 boolean invulnerability = false; //when teleporting, make sure doesn't get killed
 boolean shooter = false; //is bob shooting or not
 boolean shooterAdd = true; //ammo regen
+boolean powerCollected = false; //have you gotten a powerup this round?
 int timeInvul = 0; //how long invulnerability lasts
 int timeRegen = 0; //variable to let me control how fast ammo regens
 int asteroidAmount = 11; //how many asteroids
@@ -40,6 +45,10 @@ public void setup() {
   for (int i = 0; i < 10; i++) {
     asteroidsTitle.add(i, new Asteroids());
   }
+  //rule setup
+  powerLife = new PowerupLives(asteroidsTitle.get(0));
+  powerAmmo = new PowerupMoreAmmo(asteroidsTitle.get(1));
+  powerTeleport = new PowerupTeleport(asteroidsTitle.get(0));
   //game setup 
   bob = new Spaceship(1.6);
   size(500,600);
@@ -156,6 +165,7 @@ public void mousePressed() {
       bob.setPointDirection(0);
       bob.setDirectionX(0);
       bob.setDirectionY(0);
+      powerCollected = false;
     }
     if (mouseX >= 350 && mouseX <= 450 && mouseY >= 530 && mouseY <= 570) {
       gameState = 2;
@@ -181,6 +191,7 @@ public void mousePressed() {
       bob.setPointDirection(0);
       bob.setDirectionX(0);
       bob.setDirectionY(0);
+      powerCollected = false;
     }
   }
 }
@@ -217,16 +228,19 @@ public void detectionFunction() {
       if(dist(joe.get(j).getX(),joe.get(j).getY(),bull.get(i).getX(),bull.get(i).getY()) <= 12) {
         double probability = Math.random();
         bull.remove(i);
-        if (powerups.size() < 3 && probability < 0.06) {
+        if (powerups.size() < 3 && probability < 0.06 && powerCollected == false) {
           double powerupProb = Math.random();
           if (powerupProb < 0.33 && lives.size() < 3) {
             powerups.add(new PowerupLives(joe.get(j)));
+            powerCollected = true;
           }
           if (powerupProb >= 0.33 && powerupProb < 0.66 && maxAmmo < 42) {
             powerups.add(new PowerupMoreAmmo(joe.get(j)));
+            powerCollected = true;
           }
           if (powerupProb >= 0.66 && resetAmount < 5) {
             powerups.add(new PowerupTeleport(joe.get(j)));
+            powerCollected = true;
           }  
         }
         joe.remove(j);
@@ -237,6 +251,7 @@ public void detectionFunction() {
   }
   if (joe.size() == 0) {
     powerups.clear();
+    powerCollected = false;
     for (int i = 0; i <= asteroidAmount; i++) {
       joe.add(i, new Asteroids());
     }
@@ -263,7 +278,7 @@ public void detectionFunction() {
   }
   
   //1st function: asteroid & player
-  //2nd function: bullet & asteroid
+  //2nd function: bullet & asteroid & powerup spawning
   //3rd function: respawn asteroids
   //4th function: game over
   //5th function: bullet & powerup
@@ -342,6 +357,25 @@ public void ruleScreen() {
   text("Your score will increase as you destroy asteroids",100,290);
   text("It will also decrease as you get hit",100,310);
   text("You can also only teleport 3 times, so make good use of it", 100, 330);
+  text("You are invulnerable for a short time after teleportation.", 100, 350);
+  text("Powerups have a chance to pop out of asteroids", 100, 370);
+  powerLife.setX(100);
+  powerLife.setY(380);
+  powerLife.showRule(100,380);
+  fill(0);
+  text("This is your life powerup, +1 extra life, max 3", 120, 390);
+  powerAmmo.setX(100);
+  powerAmmo.setY(400);
+  powerAmmo.showRule(100,400);
+  fill(0);
+  text("This is your ammo powerup, +6 max ammo, max 42", 120, 410);
+  powerTeleport.setX(100);
+  powerTeleport.setY(420);
+  powerTeleport.showRule(100,420);
+  fill(0);
+  text("This is your teleport powerup, +1 teleport, max 5", 120, 430);
+  text("At the end of every round, all powerups not collected are lost", 100, 450);
+  text("You can only collect (max) one powerup per round.", 100, 470);
   fill(#DB5069);
   rect(210,540,80,40);
   fill(#1EDFE8);
@@ -443,13 +477,13 @@ public void gameOver() {
   if (joe.size() > 1) {
     text("-There were " + joe.size() + " asteroids remaining",155,260);
   }
-  if (score <= 30) {
+  if (score <= 80) {
     text("Better luck next time!", 190, 300);
   }
-  if (score > 30 && score <= 70) {
+  if (score > 80 && score <= 200) {
     text("You did great!", 210,300);
   }
-  if (score > 80) {
+  if (score > 200) {
     text("Amazing work!", 210, 300);
   }
 }

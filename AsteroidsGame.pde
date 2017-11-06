@@ -3,6 +3,7 @@ all code will be inside functions at the bottom
 this is to allow for better transitions between the states of the program
 note(s) to self: add transition screen btwn title and "play the game"
 maybe code enemy NPC? that'd be some crazy ai 
+Add opacity function to asteroids.
 */
 //title screen variables
 Stars[] starsTitle = new Stars[30];
@@ -23,6 +24,10 @@ boolean invulnerability = false; //when teleporting, make sure doesn't get kille
 boolean shooter = false; //is bob shooting or not
 boolean shooterAdd = true; //ammo regen
 boolean powerCollected = false; //have you gotten a powerup this round?
+boolean canShoot = false; //can you shoot rn?
+boolean asteroidMove = false; //can asteroids move?
+boolean showTime = true;
+int timeRound = 0; //time between rounds
 int timeInvul = 0; //how long invulnerability lasts
 int timeRegen = 0; //variable to let me control how fast ammo regens
 int asteroidAmount = 11; //how many asteroids
@@ -166,6 +171,8 @@ public void mousePressed() {
       bob.setDirectionX(0);
       bob.setDirectionY(0);
       powerCollected = false;
+      canShoot = false;
+      asteroidMove = false;
     }
     if (mouseX >= 350 && mouseX <= 450 && mouseY >= 530 && mouseY <= 570) {
       gameState = 2;
@@ -192,6 +199,8 @@ public void mousePressed() {
       bob.setDirectionX(0);
       bob.setDirectionY(0);
       powerCollected = false;
+      canShoot = false;
+      asteroidMove = false;
     }
   }
 }
@@ -210,16 +219,33 @@ public void dealWithInvulnerability() {
   }
   //if you press h, you'll be invulnerable for a bit.
 }
+public void beginRound() {
+  //deals with transitions
+  if (canShoot == false) {
+    timeRound++;
+    showTime = true;
+  }
+  if (timeRound >= 180) {
+    canShoot = true;
+    asteroidMove = true;
+  }
+  if (canShoot == true) {
+    timeRound = 0;
+    showTime = false;
+  }
+}
 public void detectionFunction() {
   for(int i = 0; i < joe.size(); i++) {
     if(dist(bob.getX(),bob.getY(),joe.get(i).getX(),joe.get(i).getY()) <= 20) {
-      if(invulnerability == true) {
-        joe.remove(i);
-      }
-      if (invulnerability == false) {
-        joe.remove(i);
-        health--;
-        score--;
+      if(canShoot == true) {
+        if(invulnerability == true) {
+          joe.remove(i);
+        }
+        if (invulnerability == false) {
+          joe.remove(i);
+          health--;
+          score--;
+        }
       }
     }
   }
@@ -257,6 +283,8 @@ public void detectionFunction() {
     }
     asteroidAmount++;
     round++;
+    asteroidMove = false;
+    canShoot = false;
   }
   if (health <= 0) {
     if (lives.size() > 0) {
@@ -403,13 +431,16 @@ public void asteroidGame() {
   }
   for (int i = 0; i < joe.size(); i++) {
     joe.get(i).show();
-    joe.get(i).move();
+    if (asteroidMove == true) {
+      joe.get(i).move();
+    }
   }
   //function calling
   infoArea();
   detectionFunction();
   dealWithInvulnerability();
   ammoRegen();
+  beginRound();
   //defining movement
   if (forward == true) {
     bob.accelerate(0.037);
@@ -426,7 +457,7 @@ public void asteroidGame() {
   }
   if (shooter == true) {
     timeShoot++;
-    if (bulletAmount > 0 && timeShoot%7 == 0) {
+    if (bulletAmount > 0 && timeShoot%7 == 0 && canShoot == true) {
       bob.shoot();
       bulletAmount-=1;
     }
@@ -526,4 +557,9 @@ public void infoArea() {
   text("Teleports Remaining",400,520);
   fill(#DE04D3);
   text(resetAmount,400,535);
+  if (showTime == true) {
+    textSize(30);
+    fill(255);
+    text((180-timeRound)/60+1,250,250);
+  }
 }

@@ -17,7 +17,7 @@ class SpaceAI {
   private int timeRegen;
   private double myCenterX, myCenterY; 
   private double myDirectionX, myDirectionY; 
-  private double myPointDirection;
+  private int myPointDirection;
   private boolean suicideRun;
   public void setX(int x) { myCenterX = x; }
   public int getX() { return (int)myCenterX; }
@@ -28,7 +28,7 @@ class SpaceAI {
   public void setDirectionY(double y) { myDirectionY = y; }
   public double getDirectionY() { return myDirectionY; }
   public void setPointDirection(int degrees) { myPointDirection = degrees; }
-  public double getPointDirection() { return myPointDirection; }
+  public int getPointDirection() { return myPointDirection; }
   public void setColor(color value) { myColor = value; }
   public int getHealth() { return health; }
   public void setHealth(int healthSet) { health = healthSet; }
@@ -90,8 +90,22 @@ class SpaceAI {
   public void turn() {
     //turns to keep in line with bob
     int rot = 5;
-    if (myPointDirection == (int)(Math.abs(Math.toDegrees(atan2((float)(bob.getY()-myCenterY),(float)(bob.getX()-myCenterX)))))) {
+    float dista = dist((float)bob.getX(),(float)myCenterX,(float)bob.getY(),(float)myCenterY);
+    int joy = (int)(acos((float)(myCenterX-250)/dista)*180/PI);
+    System.out.println("Direction: " + myPointDirection + " Angle: " + joy);
+    if (bob.getY() > 250) {
+      rot = -1;
+    }
+    if (bob.getY() < 250) {
+      rot = 1;
+    }
+    if (bob.getY() == 250) {
       rot = 0;
+    }
+    if (Math.abs(myPointDirection) >= 360) {
+      myPointDirection = 0;
+    }
+    if (Math.abs(myPointDirection) == 180+joy) {
       rot = 0;
     }
     myPointDirection+=rot;

@@ -18,6 +18,7 @@ ArrayList <Asteroids> joe;
 ArrayList <Bullets> bull;
 ArrayList <Spaceship> lives; //lives mechanic.
 ArrayList <Powerup> powerups; //powerup spawn mechanic.
+SpaceAI bio;
 Stars[] bill = new Stars[(int)(Math.random()*40)+12];
 boolean forward, back, turnl, turnr = false; //movement variables
 boolean invulnerability = false; //when teleporting, make sure doesn't get killed
@@ -55,6 +56,7 @@ public void setup() {
   powerAmmo = new PowerupMoreAmmo(asteroidsTitle.get(1));
   powerTeleport = new PowerupTeleport(asteroidsTitle.get(0));
   //game setup 
+  bio = new SpaceAI();
   bob = new Spaceship(1.6);
   size(500,600);
   for (int i = 0; i < bill.length; i++) {
@@ -415,6 +417,8 @@ public void asteroidGame() {
   background(0);
   //creation of objects
   bob.show();
+  /*bio.show();
+  bio.move();*/
   bob.move();
   for(int i = 0; i < bull.size(); i++) {
     bull.get(i).show();
@@ -560,6 +564,6 @@ public void infoArea() {
   if (showTime == true) {
     textSize(30);
     fill(255);
-    text((180-timeRound)/60+1,250,250);
+    text((int)((180-timeRound)/60+1),250,250);
   }
 }

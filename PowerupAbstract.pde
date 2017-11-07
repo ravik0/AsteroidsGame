@@ -1,4 +1,5 @@
 abstract class Powerup {
+  //decided to make own abstract class, doesnt act like a floater
   protected int myX, myY;
   protected color myColor;
   public int getX() { return myX; }

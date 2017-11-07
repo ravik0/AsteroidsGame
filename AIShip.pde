@@ -6,15 +6,19 @@ Shoot: Build the shoot function into the class itself.
 Make him come out of the side of the screen. 
 */
 class SpaceAI {
+  //similar to floater but a lot is different so I opted to not extend.
   private int corners;  
   private int[] xCorners;   
   private int[] yCorners;   
   private int myColor;   
   private int health;
   private int ammo;
+  private int timeShoot;
+  private int timeRegen;
   private double myCenterX, myCenterY; 
   private double myDirectionX, myDirectionY; 
   private double myPointDirection;
+  private boolean suicideRun;
   public void setX(int x) { myCenterX = x; }
   public int getX() { return (int)myCenterX; }
   public void setY(int y) { myCenterY = y; }
@@ -28,8 +32,9 @@ class SpaceAI {
   public void setColor(color value) { myColor = value; }
   public int getHealth() { return health; }
   public void setHealth(int healthSet) { health = healthSet; }
+  public int getAmmo() { return ammo; }
   public void setAmmo(int ammoAmount) { ammo = ammoAmount; }
-  public SpaceAI(Spaceship heartOfGold) {
+  public SpaceAI() {
     corners = 12;
     xCorners = new int[corners];
     yCorners = new int[corners];    
@@ -40,6 +45,32 @@ class SpaceAI {
     myColor = #75ED07;
     health = 50;
     ammo = 10;
+    myCenterX = 600;
+    myCenterY = 250;
+    myPointDirection = 180;
+    myDirectionX = 0;
+    myDirectionY = 0;
+    timeRegen = 0;
+    timeShoot = 0;
+    suicideRun = false;
+  }
+  public void move() {
+    if (canShoot == false) {
+      //entering screen
+      myCenterX-=2;
+      if (myCenterX <= 450) {
+        myCenterX+=2;
+      }
+    }
+    if (canShoot == true) {
+      myCenterX+=myDirectionX;
+      myCenterY+=myDirectionY;
+      if(myCenterX > 500) { myCenterX = 0; }  
+      else if (myCenterX<0) { myCenterX = 500; }
+      if(myCenterY > 500) { myCenterY = 0; }
+      else if (myCenterY < 0) { myCenterY = 500; }
+      turn();
+    }
   }
   public void show() {
     fill(myColor);   
@@ -55,5 +86,23 @@ class SpaceAI {
     endShape(CLOSE);
     rotate(-1*dRadians);
     translate(-1*(float)myCenterX, -1*(float)myCenterY);
+  }
+  public void turn() {
+    //turns to keep in line with bob
+    int rot = 5;
+    if (myPointDirection == (int)(Math.abs(Math.toDegrees(atan2((float)(bob.getY()-myCenterY),(float)(bob.getX()-myCenterX)))))) {
+      rot = 0;
+      rot = 0;
+    }
+    myPointDirection+=rot;
+  }
+  public void accelerate() {
+    //accelerates to keep distance between bob and self
+  }
+  public void shoot() {
+    //control shooting, when and where
+  }
+  public void modulate() {
+    //control health & ammo
   }
 }

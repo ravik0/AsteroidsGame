@@ -1,9 +1,6 @@
 /*
 all code will be inside functions at the bottom 
 this is to allow for better transitions between the states of the program
-note(s) to self: add transition screen btwn title and "play the game"
-maybe code enemy NPC? that'd be some crazy ai 
-Add opacity function to asteroids.
 */
 //title screen variables
 Stars[] starsTitle = new Stars[30];
@@ -14,11 +11,11 @@ Powerup powerAmmo;
 Powerup powerTeleport;
 //game variables
 Spaceship bob;
+SpaceAI bio;
 ArrayList <Asteroids> joe;
 ArrayList <Bullets> bull;
 ArrayList <Spaceship> lives; //lives mechanic.
 ArrayList <Powerup> powerups; //powerup spawn mechanic.
-SpaceAI bio;
 Stars[] bill = new Stars[(int)(Math.random()*40)+12];
 boolean forward, back, turnl, turnr = false; //movement variables
 boolean invulnerability = false; //when teleporting, make sure doesn't get killed
@@ -417,8 +414,8 @@ public void asteroidGame() {
   background(0);
   //creation of objects
   bob.show();
-  /*bio.show();
-  bio.move();*/
+  bio.show();
+  bio.move();
   bob.move();
   for(int i = 0; i < bull.size(); i++) {
     bull.get(i).show();

@@ -91,30 +91,22 @@ class SpaceAI {
   }
   public void turn() {
     //turns to keep in line with bob
-    int rot = 5;
+    int rot = 0;
     if (Math.abs(myPointDirection) >= 360) {
-      myPointDirection = 0;
-    }
+      myPointDirection = 0; //resets angle to 0 if goes to 360
+    } 
     int angle = (int)(Math.toDegrees(Math.atan2(myCenterY-bob.getY(),myCenterX-bob.getX())-PI));
-    if (bob.getY() < 250) {
-      if (angle <= myPointDirection+5 && angle >= myPointDirection-5) {
-        rot = 0;
-        lockOn = true;
-      }
-      else {
-        rot = -5;
-        lockOn = false;
-      }
+    if (angle <= myPointDirection+5 && angle >= myPointDirection-5) {
+      rot = 0; 
+      lockOn = true;
     }
-    if (bob.getY() >= 250) {
-      if (angle <= myPointDirection+5 && angle >= myPointDirection-5) {
-        rot = 0;
-        lockOn = true;
-      }
-      else {
-        rot = -5;
-        lockOn = false;
-      }
+    else if (myPointDirection < angle) {
+      rot = 5; 
+      lockOn = false;
+    }
+    else if (myPointDirection > angle) {
+      rot=-5;
+      lockOn = false;
     }
     myPointDirection+=rot;
   }

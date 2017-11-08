@@ -19,6 +19,7 @@ class SpaceAI {
   private double myDirectionX, myDirectionY; 
   private int myPointDirection;
   private boolean suicideRun;
+  private boolean lockOn;
   public void setX(int x) { myCenterX = x; }
   public int getX() { return (int)myCenterX; }
   public void setY(int y) { myCenterY = y; }
@@ -53,6 +54,7 @@ class SpaceAI {
     timeRegen = 0;
     timeShoot = 0;
     suicideRun = false;
+    lockOn = false;
   }
   public void move() {
     if (canShoot == false) {
@@ -90,27 +92,34 @@ class SpaceAI {
   public void turn() {
     //turns to keep in line with bob
     int rot = 5;
-    float dista = dist((float)bob.getX(),(float)myCenterX,(float)bob.getY(),(float)myCenterY);
-    int joy = (int)(acos((float)(myCenterX-250)/dista)*180/PI);
-    System.out.println("Direction: " + myPointDirection + " Angle: " + joy);
-    if (bob.getY() > 250) {
-      rot = -1;
-    }
-    if (bob.getY() < 250) {
-      rot = 1;
-    }
-    if (bob.getY() == 250) {
-      rot = 0;
-    }
     if (Math.abs(myPointDirection) >= 360) {
       myPointDirection = 0;
     }
-    if (Math.abs(myPointDirection) == 180+joy) {
-      rot = 0;
+    int angle = (int)(Math.toDegrees(Math.atan2(myCenterY-bob.getY(),myCenterX-bob.getX())-PI));
+    if (bob.getY() < 250) {
+      if (angle <= myPointDirection+5 && angle >= myPointDirection-5) {
+        rot = 0;
+        lockOn = true;
+      }
+      else {
+        rot = -5;
+        lockOn = false;
+      }
+    }
+    if (bob.getY() >= 250) {
+      if (angle <= myPointDirection+5 && angle >= myPointDirection-5) {
+        rot = 0;
+        lockOn = true;
+      }
+      else {
+        rot = -5;
+        lockOn = false;
+      }
     }
     myPointDirection+=rot;
   }
   public void accelerate() {
+    float dista = dist((float)bob.getX(),(float)myCenterX,(float)bob.getY(),(float)myCenterY);
     //accelerates to keep distance between bob and self
   }
   public void shoot() {

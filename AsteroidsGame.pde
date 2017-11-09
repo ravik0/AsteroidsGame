@@ -414,8 +414,8 @@ public void asteroidGame() {
   background(0);
   //creation of objects
   bob.show();
-  bio.show();
-  bio.move();
+  /*bio.show();
+  bio.move();*/
   bob.move();
   for(int i = 0; i < bull.size(); i++) {
     bull.get(i).show();

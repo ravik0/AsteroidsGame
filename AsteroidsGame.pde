@@ -1,6 +1,7 @@
 /*
 all code will be inside functions at the bottom 
 this is to allow for better transitions between the states of the program
+max on lives recieved throughout game to 2 extras
 */
 //title screen variables
 Stars[] starsTitle = new Stars[30];
@@ -37,6 +38,7 @@ int resetAmount = 3; //how many times can you teleport
 int gameState = 0; //what section of the game are we on? title, gameover, etc
 int round = 1; //what round of the game are on?
 int maxAmmo = 12; //necessary for ammo powerup to change.
+int powerupLivesAmount = 0; //how many lives have been collected
 color invulColor = #FF0000; //color when invulnerable
 color spaceshipInitialColor = #3EA9EA; //color when doing usual stuff
 public void setup() {
@@ -253,11 +255,12 @@ public void detectionFunction() {
       if(dist(joe.get(j).getX(),joe.get(j).getY(),bull.get(i).getX(),bull.get(i).getY()) <= 12) {
         double probability = Math.random();
         bull.remove(i);
-        if (powerups.size() < 3 && probability < 0.06 && powerCollected == false) {
+        if (powerups.size() < 3 && probability < 0.10 && powerCollected == false) {
           double powerupProb = Math.random();
-          if (powerupProb < 0.33 && lives.size() < 3) {
+          if (powerupProb < 0.33 && lives.size() < 3 && powerupLivesAmount < 2) {
             powerups.add(new PowerupLives(joe.get(j)));
             powerCollected = true;
+            powerupLivesAmount++;
           }
           if (powerupProb >= 0.33 && powerupProb < 0.66 && maxAmmo < 42) {
             powerups.add(new PowerupMoreAmmo(joe.get(j)));
@@ -276,6 +279,7 @@ public void detectionFunction() {
   }
   if (joe.size() == 0) {
     powerups.clear();
+    bull.clear();
     powerCollected = false;
     for (int i = 0; i <= asteroidAmount; i++) {
       joe.add(i, new Asteroids());
@@ -390,7 +394,7 @@ public void ruleScreen() {
   powerLife.setY(380);
   powerLife.showRule(100,380);
   fill(0);
-  text("This is your life powerup, +1 extra life, max 3", 120, 390);
+  text("This is your life powerup, +1 extra life, max 2 extra", 120, 390);
   powerAmmo.setX(100);
   powerAmmo.setY(400);
   powerAmmo.showRule(100,400);

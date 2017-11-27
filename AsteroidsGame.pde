@@ -25,7 +25,8 @@ boolean shooterAdd = true; //ammo regen
 boolean powerCollected = false; //have you gotten a powerup this round?
 boolean canShoot = false; //can you shoot rn?
 boolean asteroidMove = false; //can asteroids move?
-boolean showTime = true;
+boolean showTime = true; //countdown
+boolean splitAllowed = false; //when can we split asteroids
 int timeRound = 0; //time between rounds
 int timeInvul = 0; //how long invulnerability lasts
 int timeRegen = 0; //variable to let me control how fast ammo regens
@@ -271,7 +272,14 @@ public void detectionFunction() {
             powerCollected = true;
           }  
         }
-        joe.remove(j);
+        if (joe.get(j).getSplit() == true && splitAllowed == true) {
+          joe.add(new Asteroids(joe.get(j)));
+          joe.add(new Asteroids(joe.get(j)));
+          joe.remove(j);
+        }
+        else {
+          joe.remove(j);
+        }
         score++;
         break;
       }
@@ -288,6 +296,9 @@ public void detectionFunction() {
     round++;
     asteroidMove = false;
     canShoot = false;
+    if (round >= 3) {
+      splitAllowed = true;
+    }
   }
   if (health <= 0) {
     if (lives.size() > 0) {
@@ -407,6 +418,7 @@ public void ruleScreen() {
   text("This is your teleport powerup, +1 teleport, max 5", 120, 430);
   text("At the end of every round, all powerups not collected are lost", 100, 450);
   text("You can only collect (max) one powerup per round.", 100, 470);
+  text("Asteroids split into two starting round 3.", 100, 490);
   fill(#DB5069);
   rect(210,540,80,40);
   fill(#1EDFE8);

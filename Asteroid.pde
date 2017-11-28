@@ -37,8 +37,8 @@ class Asteroids extends Floater {
     xCorners = new int[corners];
     yCorners = new int[corners];
     for (int i = 0; i < 12; i++) {
-      xCorners[i] = (int)(0.75*xCornerLAst[i]);
-      yCorners[i] = (int)(0.75*yCornerLAst[i]);
+      xCorners[i] = (int)(xCornerLAst[i]);
+      yCorners[i] = (int)(yCornerLAst[i]);
     }
     myColor = #CE7A0A;
     myCenterX = joe.getX();

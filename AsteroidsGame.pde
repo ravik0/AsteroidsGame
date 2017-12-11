@@ -1,7 +1,6 @@
 /*
 all code will be inside functions at the bottom 
 this is to allow for better transitions between the states of the program
-max on lives recieved throughout game to 2 extras
 */
 //title screen variables
 Stars[] starsTitle = new Stars[30];
@@ -13,8 +12,8 @@ Powerup powerTeleport;
 //game variables
 Spaceship bob;
 SpaceAI bio;
-ArrayList <Asteroids> joe;
-ArrayList <Bullets> bull;
+ArrayList <Asteroids> joe; 
+ArrayList <Bullets> bull; 
 ArrayList <Spaceship> lives; //lives mechanic.
 ArrayList <Powerup> powerups; //powerup spawn mechanic.
 Stars[] bill = new Stars[(int)(Math.random()*40)+12];
@@ -51,12 +50,12 @@ public void setup() {
   for (int i = 0; i < 10; i++) {
     asteroidsTitle.add(i, new Asteroids());
   }
-  //rule setup
+  //rule setup, so it shows what they look like in the rules. just uses any old asteroid doesnt matter
   powerLife = new PowerupLives(asteroidsTitle.get(0));
   powerAmmo = new PowerupMoreAmmo(asteroidsTitle.get(1));
   powerTeleport = new PowerupTeleport(asteroidsTitle.get(0));
   //game setup 
-  bio = new SpaceAI();
+  bio = new SpaceAI(); //AI, nonfunctional as of now
   bob = new Spaceship(1.6);
   size(500,600);
   for (int i = 0; i < bill.length; i++) {
@@ -68,10 +67,11 @@ public void setup() {
   }
   bull = new ArrayList <Bullets>();
   lives = new ArrayList <Spaceship>();
-  lives.add(0, new Spaceship(1.6));
+  lives.add(0, new Spaceship(1.6)); //initial extra lives.
   powerups = new ArrayList <Powerup>();
 }
 public void draw() {
+  //if we are in a certain gamestate, go to that function. the functions are all at the bottom
   if (gameState == 0) {
     titleScreen();
   }
@@ -86,6 +86,7 @@ public void draw() {
   }
 }
 public void keyPressed() {
+  //if certain key is pressed, the movement keys become active
   if (key == 'w') {
     forward = true;
   } 
@@ -99,6 +100,7 @@ public void keyPressed() {
     turnr = true;
   } 
   else if (key == 'h' && resetAmount > 0) {
+    //if you have teleports remaining and press h, you teleport to new place and become invulnerable for some time.
     bob.setX(((int)(Math.random()*400)));
     bob.setY(((int)(Math.random()*400)));
     bob.setDirectionX(0);
@@ -108,11 +110,13 @@ public void keyPressed() {
     resetAmount-=1;
   }
   else if (key == ' ') {
+    //can shoot, stop regen ammo
     shooter = true;
     shooterAdd = false;
   }
 }
 public void keyReleased() {
+  //key released, movement keys turn off
   if (key == 'w') {
     forward = false;
   } 
@@ -126,11 +130,9 @@ public void keyReleased() {
     turnr = false;
   }
   else if (key == ' ') {
+    //stop shooting, start regen ammo
     shooter = false;
     shooterAdd = true;
-  }
-  else if (key == 'j') {
-    health = 0;
   }
 }
 public void mousePressed() {
@@ -320,7 +322,7 @@ public void detectionFunction() {
   }
   
   //1st function: asteroid & player
-  //2nd function: bullet & asteroid & powerup spawning
+  //2nd function: bullet & asteroid & powerup spawning & splitting asteroids
   //3rd function: respawn asteroids
   //4th function: game over
   //5th function: bullet & powerup

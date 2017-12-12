@@ -13,6 +13,7 @@ class Spaceship extends Floater  {
   public double getPointDirection() { return myPointDirection; }
   public void setColor(color value) { myColor = value; }
   public Spaceship(double sizeValue) {
+    //size value allows me to change size if i want to
     corners = 12;
     xCorners = new int[corners];
     yCorners = new int[corners];    
@@ -29,6 +30,7 @@ class Spaceship extends Floater  {
     myPointDirection = 0;
   }
   public void rocketCreater() {
+    //make lines behind the spaceship
     translate((float)myCenterX,(float)myCenterY);
     rotate((float)myPointDirection*PI/180);
     stroke(#3EA9EA);
@@ -38,6 +40,7 @@ class Spaceship extends Floater  {
     rotate(-1*(float)myPointDirection*PI/180);
   }
   public void shoot() {
+    //how to shoot
     bull.add(new Bullets(bob));
   }
   public void move() {

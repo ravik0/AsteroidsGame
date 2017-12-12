@@ -27,6 +27,7 @@ class Bullets extends Floater {
     }
   }
   public Bullets() {
+    //constructor for the powerup bullet.
     myCenterX = 0;
     myCenterY = 0;
     myPointDirection = 0;

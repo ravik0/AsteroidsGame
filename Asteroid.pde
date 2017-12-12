@@ -15,6 +15,7 @@ class Asteroids extends Floater {
   public double getPointDirection() { return myPointDirection; }
   public boolean getSplit() { return split; }
   public Asteroids() {
+    //full sized asteroid, allowed to split
     split = true;
     corners = 12;
     xCorners = new int[corners];
@@ -32,6 +33,7 @@ class Asteroids extends Floater {
     rotationSpeed = (int)(Math.random()*5+1);
   }
   public Asteroids(Asteroids joe) {
+    //mini asteroid, comes out of the big asteroid, not allowed to split.
     split = false;
     corners = 12;
     xCorners = new int[corners];

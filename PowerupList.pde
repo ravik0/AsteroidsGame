@@ -24,6 +24,7 @@ class PowerupLives extends Powerup {
     //for rule screen
   }
   public void effect() {
+    //effect is to add a new life
     lives.add(new Spaceship(1.6));
   }
 }
@@ -52,6 +53,7 @@ class PowerupMoreAmmo extends Powerup {
     MrPeewee.show();
   }
   public void effect() {
+    //effect is add 6 to max ammo
     maxAmmo+=6;
   }
 }
@@ -82,7 +84,7 @@ class PowerupTeleport extends Powerup {
     billyBob.show();
   }
   public void effect() {
+    //effect is add teleport
     resetAmount++;
   }
 }
-//maybe different ammo later

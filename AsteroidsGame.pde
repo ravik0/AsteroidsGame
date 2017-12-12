@@ -137,6 +137,7 @@ public void keyReleased() {
 }
 public void mousePressed() {
   if (gameState == 0) {
+    //if title screen, then if you click buttons go to that gamestate. same for others
     if (mouseX >= 180 && mouseX <= 330 && mouseY >= 200 && mouseY <= 250) {
       gameState = 2; 
     }
@@ -151,6 +152,7 @@ public void mousePressed() {
   }
   if (gameState == 3) {
     if (mouseX >= 50 && mouseX <= 150 && mouseY >= 530 && mouseY <= 570) {
+      //if gameover, and click exit/play again, reset all values to base values.
       gameState = 0;
       timeInvul = 0; 
       timeRegen = 0; 
@@ -211,13 +213,16 @@ public void mousePressed() {
 //game functionality functions
 public void dealWithInvulnerability() {
   if (invulnerability == true) {
+    //if true, become red and count
     bob.setColor(invulColor);
     timeInvul++;
   }
   if (timeInvul >= 30) {
+    //if time been invul > 30 (0.5s) turn off invul
     invulnerability = false;
   }
   if (invulnerability == false) {
+    //if invul false, become blue and set time to 0
     bob.setColor(spaceshipInitialColor);
     timeInvul = 0;
   }
@@ -226,14 +231,17 @@ public void dealWithInvulnerability() {
 public void beginRound() {
   //deals with transitions
   if (canShoot == false) {
+    //if beginning of round, show countdown and begin counting
     timeRound++;
     showTime = true;
   }
   if (timeRound >= 180) {
+    //if countdown finished, turn on shooting and moving abilities
     canShoot = true;
     asteroidMove = true;
   }
   if (canShoot == true) {
+    //if shooting turned on, reset counter and hide
     timeRound = 0;
     showTime = false;
   }
@@ -241,11 +249,14 @@ public void beginRound() {
 public void detectionFunction() {
   for(int i = 0; i < joe.size(); i++) {
     if(dist(bob.getX(),bob.getY(),joe.get(i).getX(),joe.get(i).getY()) <= 20) {
+      //if dist btwn spaceship and asteroid is less than 20 and you are allowed to shoot/asteroid can move (must both be same at all time) then you can remove asteroids
       if(canShoot == true) {
         if(invulnerability == true) {
+          //if invulnerable, only remove asteroid, no health penalty
           joe.remove(i);
         }
         if (invulnerability == false) {
+          //if not invulnerable, remove asteroid and health/score penalty
           joe.remove(i);
           health--;
           score--;
@@ -255,31 +266,39 @@ public void detectionFunction() {
   }
   for(int i = 0; i < bull.size(); i++) {
     for(int j = 0; j < joe.size(); j++) {
+      //nested loop, checks for collision from 1 bullet thru all asteroids
       if(dist(joe.get(j).getX(),joe.get(j).getY(),bull.get(i).getX(),bull.get(i).getY()) <= 12) {
+        //if dist btwn bullet and asteroid less than 12, generate new probablity btwn 0 and 1 and remove bullet
         double probability = Math.random();
         bull.remove(i);
         if (powerups.size() < 3 && probability < 0.10 && powerCollected == false) {
+          //if you have less than 3 powerups, your probability is under 0.1, and you havent collected one this round, create a powerup probability
           double powerupProb = Math.random();
           if (powerupProb < 0.33 && lives.size() < 3 && powerupLivesAmount < 2) {
+            //if your powerup prob comes up something, add a new powerup as long as in line with the variables. less than 3 lives and havent gotten 2 lives in the game
             powerups.add(new PowerupLives(joe.get(j)));
             powerCollected = true;
             powerupLivesAmount++;
           }
           if (powerupProb >= 0.33 && powerupProb < 0.66 && maxAmmo < 42) {
+            //max ammo less than 42
             powerups.add(new PowerupMoreAmmo(joe.get(j)));
             powerCollected = true;
           }
           if (powerupProb >= 0.66 && resetAmount < 5) {
+            //less than 5 teleports
             powerups.add(new PowerupTeleport(joe.get(j)));
             powerCollected = true;
           }  
         }
         if (joe.get(j).getSplit() == true && splitAllowed == true) {
+          //if the asteroid is allowed to split and the game lets you split, split
           joe.add(new Asteroids(joe.get(j)));
           joe.add(new Asteroids(joe.get(j)));
           joe.remove(j);
         }
         else {
+          //otherwise get rid of it
           joe.remove(j);
         }
         score++;
@@ -288,6 +307,7 @@ public void detectionFunction() {
     }
   }
   if (joe.size() == 0) {
+    //if no asteroids, remove all noncollected powerups, clear all bullets, etc etc
     powerups.clear();
     bull.clear();
     powerCollected = false;
@@ -299,23 +319,28 @@ public void detectionFunction() {
     asteroidMove = false;
     canShoot = false;
     if (round >= 3) {
+      //after round 3, game lets split
       splitAllowed = true;
     }
   }
   if (health <= 0) {
     if (lives.size() > 0) {
+      //use up 1 life if you have one
       health = 7;
       lives.remove(lives.size()-1);
     }
     else if (lives.size() == 0) {
+      //otherwise game over
       gameState = 3;
     }
   }
   for (int i = 0; i < bull.size(); i++) {
     for (int j = 0; j < powerups.size(); j++) {
       if(dist(powerups.get(j).getX(),powerups.get(j).getY(),bull.get(i).getX(),bull.get(i).getY()) <= 12) {
+        //if bullet connect w/ powerup, cause powerup effect and remove powerup and bullet
         powerups.get(j).effect();
         powerups.remove(j);
+        bull.remove(i);
         break;
       }
     }
@@ -330,12 +355,14 @@ public void detectionFunction() {
 
 public void ammoRegen() {
   if (shooterAdd == true) {
+    //if can regen, add to time. every 8 ticks, if ur bullet amount is less than max ammo, regen one.
     timeRegen++;
     if (bulletAmount < maxAmmo & timeRegen%8 == 0) {
       bulletAmount++;
     } 
   }
   if (shooterAdd == false) {
+    //else reset timer
     timeRegen = 0;
   }
 }
@@ -367,7 +394,6 @@ public void titleScreen() {
   fill(255);
   textSize(13);
   text("Rules & Controls", 205, 325);
-  //change colors later, maybe put like a throttle to give feeling of ship interior? could do for real game too
   stroke(#E6F289);
   fill(#E6F289);
   rect(0,500,500,100);
@@ -433,12 +459,13 @@ public void asteroidGame() {
   //creation of objects
   bob.show();
   /*bio.show();
-  bio.move();*/
+  bio.move();*/ //AI stuff, nonfunctional so commented out
   bob.move();
   for(int i = 0; i < bull.size(); i++) {
     bull.get(i).show();
     bull.get(i).move();
     if(bull.get(i).getX() > width || bull.get(i).getX() < 0 || bull.get(i).getY() > 500 || bull.get(i).getY() < 0) {
+      //if out of bounds, remove.
       bull.remove(i);
     }
   }

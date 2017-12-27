@@ -11,11 +11,12 @@ Powerup powerAmmo;
 Powerup powerTeleport;
 //game variables
 Spaceship bob;
-SpaceAI bio;
+ArrayList <SpaceAI> bio;
 ArrayList <Asteroids> joe; 
 ArrayList <Bullets> bull; 
 ArrayList <Spaceship> lives; //lives mechanic.
 ArrayList <Powerup> powerups; //powerup spawn mechanic.
+ArrayList <Bullets> AIBullets; //bullets for AI
 Stars[] bill = new Stars[(int)(Math.random()*40)+12];
 boolean forward, back, turnl, turnr = false; //movement variables
 boolean invulnerability = false; //when teleporting, make sure doesn't get killed
@@ -26,19 +27,21 @@ boolean canShoot = false; //can you shoot rn?
 boolean asteroidMove = false; //can asteroids move?
 boolean showTime = true; //countdown
 boolean splitAllowed = false; //when can we split asteroids
+boolean AIFight = false; //is there an enemy spaceship?
+boolean fightOngoing = false; //necessary to stop multiple ais from spawning. are we fighting
 int timeRound = 0; //time between rounds
 int timeInvul = 0; //how long invulnerability lasts
 int timeRegen = 0; //variable to let me control how fast ammo regens
 int asteroidAmount = 11; //how many asteroids
 int bulletAmount = 12; //ammo
 int timeShoot = 0; //how often you can shoot
-int health = 7; //health
 int score = 0; //score, + if you destroy asteroid, - if you get hit
 int resetAmount = 3; //how many times can you teleport
 int gameState = 0; //what section of the game are we on? title, gameover, etc
 int round = 1; //what round of the game are on?
 int maxAmmo = 12; //necessary for ammo powerup to change.
 int powerupLivesAmount = 0; //how many lives have been collected
+float health = 7; //health
 color invulColor = #FF0000; //color when invulnerable
 color spaceshipInitialColor = #3EA9EA; //color when doing usual stuff
 public void setup() {
@@ -55,7 +58,6 @@ public void setup() {
   powerAmmo = new PowerupMoreAmmo(asteroidsTitle.get(1));
   powerTeleport = new PowerupTeleport(asteroidsTitle.get(0));
   //game setup 
-  bio = new SpaceAI(); //AI, nonfunctional as of now
   bob = new Spaceship(1.6);
   size(500,600);
   for (int i = 0; i < bill.length; i++) {
@@ -69,6 +71,8 @@ public void setup() {
   lives = new ArrayList <Spaceship>();
   lives.add(0, new Spaceship(1.6)); //initial extra lives.
   powerups = new ArrayList <Powerup>();
+  AIBullets = new ArrayList <Bullets>();
+  bio = new ArrayList <SpaceAI>();
 }
 public void draw() {
   //if we are in a certain gamestate, go to that function. the functions are all at the bottom
@@ -171,6 +175,7 @@ public void mousePressed() {
       lives.add(0, new Spaceship(1.6));
       powerups.clear();
       bull.clear();
+      AIBullets.clear();
       bob.setX(250);
       bob.setY(250);
       bob.setPointDirection(0);
@@ -179,6 +184,8 @@ public void mousePressed() {
       powerCollected = false;
       canShoot = false;
       asteroidMove = false;
+      splitAllowed = false;
+      AIFight = false;
     }
     if (mouseX >= 350 && mouseX <= 450 && mouseY >= 530 && mouseY <= 570) {
       gameState = 2;
@@ -199,6 +206,7 @@ public void mousePressed() {
       lives.add(0, new Spaceship(1.6));
       powerups.clear();
       bull.clear();
+      AIBullets.clear();
       bob.setX(250);
       bob.setY(250);
       bob.setPointDirection(0);
@@ -207,6 +215,8 @@ public void mousePressed() {
       powerCollected = false;
       canShoot = false;
       asteroidMove = false;
+      splitAllowed = false;
+      AIFight = false;
     }
   }
 }
@@ -247,6 +257,7 @@ public void beginRound() {
   }
 }
 public void detectionFunction() {
+  //1st function: asteroid & player
   for(int i = 0; i < joe.size(); i++) {
     if(dist(bob.getX(),bob.getY(),joe.get(i).getX(),joe.get(i).getY()) <= 20) {
       //if dist btwn spaceship and asteroid is less than 20 and you are allowed to shoot/asteroid can move (must both be same at all time) then you can remove asteroids
@@ -264,6 +275,7 @@ public void detectionFunction() {
       }
     }
   }
+  //2nd function: bullet & asteroid & powerup spawning & splitting asteroids
   for(int i = 0; i < bull.size(); i++) {
     for(int j = 0; j < joe.size(); j++) {
       //nested loop, checks for collision from 1 bullet thru all asteroids
@@ -306,23 +318,43 @@ public void detectionFunction() {
       }
     }
   }
+  //3rd function: respawn asteroids & deal with AI
   if (joe.size() == 0) {
-    //if no asteroids, remove all noncollected powerups, clear all bullets, etc etc
-    powerups.clear();
-    bull.clear();
-    powerCollected = false;
-    for (int i = 0; i <= asteroidAmount; i++) {
-      joe.add(i, new Asteroids());
+    double probability = Math.random();
+    if (round >= 4 && probability < 0.1) {
+      //if you're at/past round 4 and you roll the 10% chance, start the AI fight
+      AIFight = true;
     }
-    asteroidAmount++;
-    round++;
-    asteroidMove = false;
-    canShoot = false;
-    if (round >= 3) {
-      //after round 3, game lets split
-      splitAllowed = true;
+    if (AIFight == false) {
+      //if no asteroids and no AI, remove all noncollected powerups, clear all bullets, etc etc
+      powerups.clear();
+      bull.clear();
+      AIBullets.clear();
+      powerCollected = false;
+      for (int i = 0; i <= asteroidAmount; i++) {
+        joe.add(i, new Asteroids());
+      }
+      asteroidAmount++;
+      round++;
+      asteroidMove = false;
+      canShoot = false;
+      if (round >= 3) {
+        //after round 3, game lets split
+        splitAllowed = true;
+      }
+    }
+    else if (AIFight == true && fightOngoing == false) {
+      bio.add(new SpaceAI());
+      round++;
+      asteroidMove = false;
+      canShoot = false;
+      fightOngoing = true;
+      powerups.clear();
+      bull.clear();
+      powerCollected = false;
     }
   }
+  //4th function: game over
   if (health <= 0) {
     if (lives.size() > 0) {
       //use up 1 life if you have one
@@ -334,6 +366,7 @@ public void detectionFunction() {
       gameState = 3;
     }
   }
+  //5th function: bullet & powerup
   for (int i = 0; i < bull.size(); i++) {
     for (int j = 0; j < powerups.size(); j++) {
       if(dist(powerups.get(j).getX(),powerups.get(j).getY(),bull.get(i).getX(),bull.get(i).getY()) <= 12) {
@@ -345,12 +378,55 @@ public void detectionFunction() {
       }
     }
   }
-  
-  //1st function: asteroid & player
-  //2nd function: bullet & asteroid & powerup spawning & splitting asteroids
-  //3rd function: respawn asteroids
-  //4th function: game over
-  //5th function: bullet & powerup
+  //6th function: AI and human bullet
+  for(int i = 0; i < bull.size(); i++) {
+    for(int j = 0; j < bio.size(); j++) {
+      if(dist(bull.get(i).getX(),bull.get(i).getY(),bio.get(j).getX(),bio.get(j).getY()) <= 15) {
+        bull.remove(i);
+        bio.get(j).setHealth(bio.get(j).getHealth()-1);
+        break;
+      }
+    }
+  }
+  //7th function: human and AI bullet
+  for(int i = 0; i < AIBullets.size(); i++) {
+    if(dist(bob.getX(),bob.getY(),AIBullets.get(i).getX(),AIBullets.get(i).getY()) <= 15) {
+      health-=0.25;
+      AIBullets.remove(i);
+      break;
+    }
+  }
+  //8th function: collision btwn human and AI
+  for(int i = 0; i < bio.size(); i++) {
+    if(dist(bio.get(i).getX(),bio.get(i).getY(),bob.getX(),bob.getY()) <= 13) {
+        if (invulnerability == false) {
+        health-=3;
+        bio.get(i).setHealth(bio.get(i).getHealth()-5);
+        invulnerability = true;
+      }
+    }
+  }
+  //9th function: AI death
+  for(int i = 0; i < bio.size(); i++) {
+    if (bio.get(i).getHealth() <= 0) {
+      AIFight = false;
+      fightOngoing = false;
+      score+=30;
+      //stolen from 2nd function, gives powerup to you. no collection necessary      
+      double powerupProb = Math.random();
+      if (powerupProb < 0.33 && lives.size() < 3 && powerupLivesAmount < 2) {
+        lives.add(new Spaceship(1.6));
+        powerupLivesAmount++;
+      }
+      if (powerupProb >= 0.33 && powerupProb < 0.66 && maxAmmo < 42) {
+        maxAmmo+=6;
+      }
+      if (powerupProb >= 0.66 && resetAmount < 5) {
+        resetAmount++;
+      }
+      bio.remove(i);
+    }
+  }
 }
 
 public void ammoRegen() {
@@ -458,15 +534,27 @@ public void asteroidGame() {
   background(0);
   //creation of objects
   bob.show();
-  /*bio.show();
-  bio.move();*/ //AI stuff, nonfunctional so commented out
   bob.move();
+  if (AIFight == true) {
+    for (int i = 0; i < bio.size(); i++) {
+      bio.get(i).show();
+      bio.get(i).move();
+    }
+  }
   for(int i = 0; i < bull.size(); i++) {
     bull.get(i).show();
     bull.get(i).move();
     if(bull.get(i).getX() > width || bull.get(i).getX() < 0 || bull.get(i).getY() > 500 || bull.get(i).getY() < 0) {
       //if out of bounds, remove.
       bull.remove(i);
+    }
+  }
+  for(int i = 0; i < AIBullets.size(); i++) {
+    AIBullets.get(i).show();
+    AIBullets.get(i).move();
+    if(AIBullets.get(i).getX() > width || AIBullets.get(i).getX() < 0 || AIBullets.get(i).getY() > 500 || AIBullets.get(i).getY() < 0) {
+      //if out of bounds, remove.
+      AIBullets.remove(i);
     }
   }
   for (int i = 0; i < bill.length; i++) {
@@ -580,7 +668,12 @@ public void infoArea() {
   fill(#0423DE);
   text("Health", 100, 520);
   fill(#DE04D3);
-  text(health,100,530);
+  if (health%1 == 0) {
+    text((int)health,100,530);
+  }
+  else {
+    text(health,100,530);
+  }
   fill(255,0,0);
   rect(96,555,5,-3*health);
   fill(#0423DE);
@@ -607,5 +700,15 @@ public void infoArea() {
     textSize(30);
     fill(255);
     text((int)((180-timeRound)/60+1),250,250);
+  }
+  if (AIFight == true) {
+    fill(#0423DE);
+    textSize(12);
+    text("AI Health Bar", 400,560);
+    noStroke();
+    fill(255,0,0);
+    for (int i = 0; i < bio.size(); i++) {
+      rect(370,570,bio.get(i).getHealth(),3);
+    }
   }
 }

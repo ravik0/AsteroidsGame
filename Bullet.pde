@@ -26,6 +26,22 @@ class Bullets extends Floater {
       yCorners[i] = yCornLBull[i];
     }
   }
+  public Bullets(SpaceAI shipper) {
+    //necessary because AI does not extend off of floater.
+    myCenterX = shipper.getX();
+    myCenterY = shipper.getY();
+    myPointDirection = shipper.getPointDirection();
+    myDirectionX = 5*Math.cos(myPointDirection*(Math.PI/180)) + shipper.getDirectionX();
+    myDirectionY = 5*Math.sin(myPointDirection*(Math.PI/180)) + shipper.getDirectionY();  
+    myColor = #28EA94;
+    corners = 4;
+    xCorners = new int[corners];
+    yCorners = new int[corners];
+    for (int i = 0; i < corners; i++) {
+      xCorners[i] = xCornLBull[i];
+      yCorners[i] = yCornLBull[i];
+    }
+  }
   public Bullets() {
     //constructor for the powerup bullet.
     myCenterX = 0;

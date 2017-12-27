@@ -10,7 +10,7 @@ abstract class Powerup {
     noStroke();
     fill(myColor);
     rect(myX,myY,11,11);
-    //this will be super.move(), put own design ontop in extended class
+    //this will be super.show(), put own design ontop in extended class
   }
   abstract public void showRule(int x, int y); //show for rule screen, for some reason didnt like the name "show" with 2 arguments, so new name
   abstract public void effect();

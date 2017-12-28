@@ -9,6 +9,7 @@ ArrayList <Asteroids> asteroidsTitle;
 Powerup powerLife;
 Powerup powerAmmo;
 Powerup powerTeleport;
+SpaceAI AIShowcase;
 //game variables
 Spaceship bob;
 ArrayList <SpaceAI> bio;
@@ -29,6 +30,8 @@ boolean showTime = true; //countdown
 boolean splitAllowed = false; //when can we split asteroids
 boolean AIFight = false; //is there an enemy spaceship?
 boolean fightOngoing = false; //necessary to stop multiple ais from spawning. are we fighting
+boolean ruleScreenSwap = false; //basically, since i have two buttons in same position on rule screen i need to delay. 
+int timeRuleScreen = 0; //delay timing
 int timeRound = 0; //time between rounds
 int timeInvul = 0; //how long invulnerability lasts
 int timeRegen = 0; //variable to let me control how fast ammo regens
@@ -57,6 +60,7 @@ public void setup() {
   powerLife = new PowerupLives(asteroidsTitle.get(0));
   powerAmmo = new PowerupMoreAmmo(asteroidsTitle.get(1));
   powerTeleport = new PowerupTeleport(asteroidsTitle.get(0));
+  AIShowcase = new SpaceAI();
   //game setup 
   bob = new Spaceship(1.6);
   size(500,600);
@@ -87,6 +91,9 @@ public void draw() {
   }
   if (gameState == 3) {
     gameOver();
+  }
+  if (gameState == 4) {
+    ruleScreen2();
   }
 }
 public void keyPressed() {
@@ -151,14 +158,16 @@ public void mousePressed() {
   }
   if (gameState == 1) {
     if (mouseX >= 210 && mouseX <= 290 && mouseY >= 540 && mouseY <= 580) {
-      gameState = 2;
+      gameState = 4;
+      ruleScreenSwap = true;
     }
   }
   if (gameState == 3) {
     if (mouseX >= 50 && mouseX <= 150 && mouseY >= 530 && mouseY <= 570) {
       //if gameover, and click exit/play again, reset all values to base values.
       gameState = 0;
-      timeInvul = 0; 
+      timeInvul = 0;
+      timeRuleScreen = 0;
       timeRegen = 0; 
       asteroidAmount = 10; 
       bulletAmount = 12; 
@@ -186,11 +195,13 @@ public void mousePressed() {
       asteroidMove = false;
       splitAllowed = false;
       AIFight = false;
+      ruleScreenSwap = false;
     }
     if (mouseX >= 350 && mouseX <= 450 && mouseY >= 530 && mouseY <= 570) {
       gameState = 2;
       timeInvul = 0; 
       timeRegen = 0; 
+      timeRuleScreen = 0;
       asteroidAmount = 10; 
       bulletAmount = 12; 
       timeShoot = 0; 
@@ -217,6 +228,15 @@ public void mousePressed() {
       asteroidMove = false;
       splitAllowed = false;
       AIFight = false;
+      ruleScreenSwap = false;
+    }
+  }
+  if (gameState == 4 && timeRuleScreen >= 15) {
+    if (mouseX >= 210 && mouseX <= 290 && mouseY >= 540 && mouseY <= 580) {
+      gameState = 2;
+      timeRuleScreen = 0;
+      ruleScreenSwap = false;
+      //problem here is that since buttons are both in same spot for rule pg 1 and 2, when you press the 1st, it presses the 2nd automatically. these two variables allow for a delay inbetween when the 2nd button accepts presses, letting you view both pages
     }
   }
 }
@@ -499,7 +519,7 @@ public void ruleScreen() {
   text("Press H to teleport somewhere else and reset velocity", 100, 180);
   text("The game starts with 10 asteroids", 100, 230);
   text("As you progress, more and more asteroids will spawn", 100, 250);
-  text("You have 7 health to start, get hit 7 times and you're dead", 100, 270);
+  text("You have 7 health to start", 100, 270);
   text("Your score will increase as you destroy asteroids",100,290);
   text("It will also decrease as you get hit",100,310);
   text("You can also only teleport 3 times, so make good use of it", 100, 330);
@@ -523,6 +543,55 @@ public void ruleScreen() {
   text("At the end of every round, all powerups not collected are lost", 100, 450);
   text("You can only collect (max) one powerup per round.", 100, 470);
   text("Asteroids split into two starting round 3.", 100, 490);
+  fill(#DB5069);
+  noStroke();
+  rect(210,540,80,40);
+  fill(#1EDFE8);
+  textSize(18);
+  text("Next", 230,555);
+  text("Page", 230,575);
+}
+public void ruleScreen2() {
+  //gamestate 4 as added after gameover
+  if (ruleScreenSwap == true) {
+    timeRuleScreen++;
+  }
+  background(0);
+  for (int i = 0; i < starsTitle.length; i++) {
+    starsTitle[i].show();
+  }
+  for (int i = 0; i < asteroidsTitle.size(); i++) {
+    asteroidsTitle.get(i).show();
+    asteroidsTitle.get(i).move();
+  }
+  noStroke();
+  fill(255);
+  rect(40,90,420,420);
+  textSize(15);
+  fill(#FF0011);
+  textAlign(250,250);
+  text("LIVES EXPLANATION",200,115);
+  text("ENEMY EXPLANATION", 200, 210);
+  fill(0);
+  textSize(12);
+  text("One life is equivalent to 7 health", 100, 140);
+  text("Each time you get to 0 health, 1 life is used to bring you back", 100, 160);
+  text("You can have a max of 3 lives per game.", 100, 180);
+  text("The enemy is a bigger, green version of yourself", 100, 230);
+  AIShowcase.setX(400);
+  AIShowcase.setY(225);
+  AIShowcase.show();
+  fill(0);
+  text("It has 25 health, and will follow and try to shoot you.", 100, 250);
+  text("When there is an enemy spaceship, there will be no asteroids.", 100, 270);
+  text("If you crash into it, you lose 3 health, it loses 5.", 100, 290);
+  text("You will be invincible for 0.5s following the crash.", 100, 310);
+  text("The enemy's bullets do 0.25 damage to you.", 100, 330);
+  text("If you win, you get a random powerup", 100, 350);
+  text("If you roll a powerup but the max has been met,", 100, 370);
+  text("you will not get it.", 100, 390);
+  text("The enemy has a 10% chance to spawn starting at round 4.", 100, 410);
+  //play below
   fill(#DB5069);
   rect(210,540,80,40);
   fill(#1EDFE8);
@@ -641,6 +710,11 @@ public void gameOver() {
   }
   if (joe.size() > 1) {
     text("-There were " + joe.size() + " asteroids remaining",155,260);
+  }
+  if (joe.size() == 0 && AIFight == true) {
+    for (int i = 0; i < bio.size(); i++) {
+      text("-Your enemy had " + bio.get(i).getHealth() + " health left", 155, 260);
+    }
   }
   if (score <= 80) {
     text("Better luck next time!", 190, 300);

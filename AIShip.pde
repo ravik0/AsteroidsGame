@@ -1,10 +1,3 @@
-/*
-Move: Will want to keep a distance of about 50-60 with bob, no asteroids will spawn in the level. Accelerates/decel to keep up with bob. Move forward/back/left/right. Attempt to suicide bomb at 5-10hp? Randomize movement, but keep within 50-60.
-Accelerate: Accelerate will be simple add. Nothing fancy most likely.
-Shoot: Build the shoot function into the class itself.
-Make him come out of the side of the screen. 
-INCOMPLETE
-*/
 class SpaceAI {
   //similar to floater but a lot is different so I opted to not extend.
   private int corners;  
@@ -15,9 +8,9 @@ class SpaceAI {
   private int ammo;
   private int timeShoot;
   private int timeRegen;
+  private int myPointDirection;
   private double myCenterX, myCenterY; 
   private double myDirectionX, myDirectionY; 
-  private int myPointDirection;
   private boolean lockOn;
   private boolean regenMode;
   public void setX(int x) { myCenterX = x; }

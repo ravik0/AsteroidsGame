@@ -33,7 +33,7 @@ class Bullets extends Floater {
     myPointDirection = shipper.getPointDirection();
     myDirectionX = 5*Math.cos(myPointDirection*(Math.PI/180)) + shipper.getDirectionX();
     myDirectionY = 5*Math.sin(myPointDirection*(Math.PI/180)) + shipper.getDirectionY();  
-    myColor = #28EA94;
+    myColor = #B6B721;
     corners = 4;
     xCorners = new int[corners];
     yCorners = new int[corners];

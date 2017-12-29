@@ -91,7 +91,7 @@ class SpaceAI {
     if (Math.abs(myPointDirection) >= 360) {
       myPointDirection = 0; //resets angle to 0 if goes to 360
     } 
-    int angle = (int)(Math.toDegrees(Math.atan2(myCenterY-bob.getY(),myCenterX-bob.getX())-PI));
+    int angle = (int)((Math.atan2(myCenterY-bob.getY(),myCenterX-bob.getX())-PI)*(180/PI));
     //math :(
     if (angle <= myPointDirection+5 && angle >= myPointDirection-5) {
       rot = 0; 

@@ -28,7 +28,7 @@ boolean canShoot = false; //can you shoot rn?
 boolean asteroidMove = false; //can asteroids move?
 boolean showTime = true; //countdown
 boolean splitAllowed = false; //when can we split asteroids
-boolean AIFight = false; //is there an enemy spaceship?
+boolean AIFight = true; //is there an enemy spaceship?
 boolean fightOngoing = false; //necessary to stop multiple ais from spawning. are we fighting
 boolean ruleScreenSwap = false; //basically, since i have two buttons in same position on rule screen i need to delay. 
 int timeRuleScreen = 0; //delay timing
@@ -620,6 +620,7 @@ public void asteroidGame() {
     }
   }
   for(int i = 0; i < AIBullets.size(); i++) {
+    AIBullets.get(i).setColor(#B6B721);
     AIBullets.get(i).show();
     AIBullets.get(i).move();
     if(AIBullets.get(i).getX() > width || AIBullets.get(i).getX() < 0 || AIBullets.get(i).getY() > 500 || AIBullets.get(i).getY() < 0) {

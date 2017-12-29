@@ -611,7 +611,7 @@ public void asteroidGame() {
     }
   }
   for(int i = 0; i < bull.size(); i++) {
-    fill(#28EA94);
+    bull.get(i).setColor(#28EA94);
     bull.get(i).show();
     bull.get(i).move();
     if(bull.get(i).getX() > width || bull.get(i).getX() < 0 || bull.get(i).getY() > 500 || bull.get(i).getY() < 0) {

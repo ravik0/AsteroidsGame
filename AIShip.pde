@@ -114,8 +114,8 @@ class SpaceAI {
     float dista = dist((float)bob.getX(),(float)bob.getY(),(float)myCenterX, (float)myCenterY);
     if (dista > 140) {
       //inspired by chemotaxis. instant velocity change; easier to code in.
-      myDirectionX = Math.cos(Math.toRadians(myPointDirection))+(bob.getX()-myCenterX)/80;
-      myDirectionY = Math.sin(Math.toRadians(myPointDirection))+(bob.getY()-myCenterY)/80;
+      myDirectionX = Math.cos((PI/180)*(myPointDirection))+(bob.getX()-myCenterX)/80;
+      myDirectionY = Math.sin((PI/180)*(myPointDirection))+(bob.getY()-myCenterY)/80;
     }
     else if (dista <= 140) { 
       //if you're at 140 or less, depending on sign of directionX and Y it will go to 0.

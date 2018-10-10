@@ -1,4 +1,4 @@
-*Note: This assignment does not show good Object-Oriented design, but as it was our first true program we were not expected to know how to design programs cleanly.*
+Go to ravik0.github.io/AsteroidsGame to see the game in action. 
 
 Asteroids (Part 1)
 ==================
